@@ -10,7 +10,9 @@ public struct Slide<Content: View>: View {
     }
 
     public var body: some View {
-        content
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        VStack {
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
     }
 }
