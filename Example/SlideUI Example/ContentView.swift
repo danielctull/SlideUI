@@ -23,7 +23,7 @@ struct MySlide: View {
     let content: String
 
     var body: some View {
-        Slide(header: title, footer: "Daniel Tull") {
+        Slide(header: title) {
             Text(content)
             Button("Advance") {
                 advance()
@@ -38,25 +38,23 @@ struct CustomSlideStyle: SlideStyle {
         VStack {
 
             configuration.header
-                .font(.system(size: 80, weight: .bold, design: .rounded))
+                .fontWidth(.expanded)
+                .textCase(.uppercase)
+                .font(.system(size: 100, weight: .ultraLight))
+                .foregroundColor(.yellow)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
 
             configuration.content
-                .font(.system(size: 30, design: .rounded))
+                .font(.system(size: 60, weight: .light))
                 .frame(maxHeight: .infinity)
 
             configuration.footer
-                .font(.system(size: 20, design: .rounded))
-                .padding(5)
-                .frame(maxWidth: .infinity)
-                .background(.orange)
-                .foregroundColor(.white)
+                .font(.system(size: 30, weight: .light))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .border(.orange)
-        .padding()
-        .background(Color.white)
+        .padding(30)
+        .foregroundColor(.white)
+        .background(.black)
     }
 }
 
