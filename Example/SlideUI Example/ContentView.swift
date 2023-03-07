@@ -12,6 +12,7 @@ struct ContentView: View {
             MySlide(title: "Slide 2")
             MySlide(title: "Slide 3")
         }
+        .slideStyle(CustomSlideStyle())
     }
 }
 
@@ -27,6 +28,18 @@ struct MySlide: View {
                 advance()
             }
         }
+    }
+}
+
+struct CustomSlideStyle: SlideStyle {
+
+    func makeBody(configuration: Configuration) -> some View {
+        VStack {
+            configuration.content
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .border(.red)
+        .padding()
     }
 }
 
