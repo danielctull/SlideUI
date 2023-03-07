@@ -4,31 +4,13 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @Environment(\.advance) var advance
-
     var body: some View {
         Presentation {
-            MySlide(title: "Slide 1", content: "This is some content one")
-            MySlide(title: "Slide 2", content: "This is some content two")
-            MySlide(title: "Slide 3", content: "This is some content three")
+            Slide(header: "Slide 1") { Text("This is some content one") }
+            Slide(header: "Slide 2") { Text("This is some content two") }
+            Slide(header: "Slide 3") { Text("This is some content three") }
         }
         .slideStyle(CustomSlideStyle())
-    }
-}
-
-struct MySlide: View {
-
-    @Environment(\.advance) private var advance
-    let title: String
-    let content: String
-
-    var body: some View {
-        Slide(header: title) {
-            Text(content)
-            Button("Advance") {
-                advance()
-            }
-        }
     }
 }
 

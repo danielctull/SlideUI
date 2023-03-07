@@ -14,7 +14,12 @@ public struct Presentation<Content: View>: View {
         PresentationLayout(index: index) {
             content()
         }
-        .advance { index += 1 }
+        .overlay {
+            HStack(spacing: 0) {
+                Color.red.opacity(0.0000001).onTapGesture { index -= 1 }
+                Color.red.opacity(0.0000001).onTapGesture { index += 1 }
+            }
+        }
     }
 }
 
@@ -31,7 +36,7 @@ public struct PresentationLayout: Layout {
 
     public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
 
-        let index = min(subviews.count - 1, index)
+        let index = max(min(subviews.count - 1, index), 0)
 
         for (i, subview) in subviews.enumerated() {
             if i == index {
