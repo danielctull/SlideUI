@@ -1,5 +1,6 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.9
 
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -15,15 +16,29 @@ let package = Package(
             name: "SlideUI",
             targets: ["SlideUI"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-syntax", branch: "main"),
+    ],
     targets: [
 
         .target(
-            name: "SlideUI"),
+            name: "SlideUI",
+            dependencies: [
+                "SlideUIMacros",
+            ]),
 
         .testTarget(
             name: "SlideUITests",
             dependencies: [
-                "SlideUI"
+                "SlideUI",
+            ]),
+
+        .macro(
+            name: "SlideUIMacros",
+            dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ]),
     ]
 )
