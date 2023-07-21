@@ -11,10 +11,19 @@ let package = Package(
         .watchOS(.v9),
     ],
     products: [
-        .library(name: "SlideUI", targets: ["SlideUI"]),
+        .library(
+            name: "SlideUI",
+            targets: ["SlideUI"]),
     ],
     targets: [
-        .target(name: "SlideUI"),
-        .testTarget(name: "SlideUITests", dependencies: ["SlideUI"]),
+
+        .target(
+            name: "SlideUI"),
+
+        .testTarget(
+            name: "SlideUITests",
+            dependencies: [
+                "SlideUI"
+            ]),
     ]
 )
