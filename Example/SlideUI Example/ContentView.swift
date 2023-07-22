@@ -6,7 +6,10 @@ struct ContentView: View {
 
     var body: some View {
         Presentation {
-            Slide(header: "Slide 1") { Text("This is some content one") }
+            Slide(header: "Slide 1") {
+                Text("This is how to make a red square.")
+                #Code(Color.red.frame(width: 100, height: 100))
+            }
             Slide(header: "Slide 2") { Text("This is some content two") }
             Slide(header: "Slide 3") { Text("This is some content three") }
         }
