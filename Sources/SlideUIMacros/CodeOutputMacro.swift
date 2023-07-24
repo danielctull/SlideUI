@@ -2,16 +2,7 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-/// Implementation of the `stringify` macro, which takes an expression
-/// of any type and produces a tuple containing the value of that expression
-/// and the source code that produced the value. For example
-///
-///     #stringify(x + y)
-///
-///  will expand to
-///
-///     (x + y, "x + y")
-public struct CodeMacro: ExpressionMacro {
+public struct CodeOutputMacro: ExpressionMacro {
 
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -23,7 +14,7 @@ public struct CodeMacro: ExpressionMacro {
         }
 
         return """
-            CodeView {
+            CodeOutputView {
                 \(argument)
             } code: {
                 \(literal: argument.description)

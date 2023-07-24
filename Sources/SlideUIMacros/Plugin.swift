@@ -6,6 +6,6 @@ import SwiftSyntaxMacros
 struct SlideUIPlugin: CompilerPlugin {
 
     let providingMacros: [Macro.Type] = [
-        CodeMacro.self,
+        CodeOutputMacro.self,
     ]
 }
