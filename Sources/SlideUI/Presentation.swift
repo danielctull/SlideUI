@@ -16,8 +16,8 @@ public struct Presentation<Content: View>: View {
         }
         .overlay {
             HStack(spacing: 0) {
-                Color.red.opacity(0.0000001).onTapGesture { index -= 1 }
-                Color.red.opacity(0.0000001).onTapGesture { index += 1 }
+                Color.white.opacity(0.0000001).onTapGesture { index -= 1 }
+                Color.white.opacity(0.0000001).onTapGesture { index += 1 }
             }
         }
     }
