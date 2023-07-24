@@ -23,18 +23,18 @@ public struct Presentation<Content: View>: View {
     }
 }
 
-public struct PresentationLayout: Layout {
+fileprivate struct PresentationLayout: Layout {
 
     private let index: Int
-    public init(index: Int) {
+    fileprivate init(index: Int) {
         self.index = index
     }
 
-    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         proposal.replacingUnspecifiedDimensions()
     }
 
-    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
 
         let index = max(min(subviews.count - 1, index), 0)
 
