@@ -7,21 +7,14 @@ struct ContentView: View {
     var body: some View {
         Presentation {
             Slide(header: "Slide 1") {
-
-                TokenView(tokens: [
-                    .comment("// This is a comment"),
-                    .plain("\n"),
-                    .keyword("func"),
-                    .plain(" "),
-                    .identifierFunction("foo"),
-                    .plain("() {\n"),
-                    .plain("    "),
-                    .identifierFunctionSystem("print"),
-                    .plain("("),
-                    .string(#""Hello, world!""#),
-                    .plain(")\n"),
-                    .plain("}"),
-                ])
+                Code {
+                    """
+                    // This is a comment
+                    func foo() {
+                        print("Hello, world!")
+                    }
+                    """
+                }
             }
             Slide(header: "Slide 2") {
                 Text("This is how to make a red square.")

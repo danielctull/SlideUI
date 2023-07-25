@@ -13,24 +13,20 @@ public struct Code: View {
 extension Code {
 
     public init(_ code: some StringProtocol) {
-        self.init(tokens: [])
+        self.init(tokens: Array(code: code))
     }
 
     public init(_ code: () -> some StringProtocol) {
-        self.init(tokens: [])
+        self.init(tokens: Array(code: code()))
     }
 }
 
-public struct TokenView: View {
-    
+private struct TokenView: View {
+
     @Environment(\.codeStyle) var style
     let tokens: [Token]
     
-    public init(tokens: [Token]) {
-        self.tokens = tokens
-    }
-    
-    public var body: some View {
+    var body: some View {
         tokens.reduce(Text("")) { accumulated, token in
             let text: Text = Text(token.value)
                 .font(style.font(token))

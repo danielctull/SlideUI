@@ -1,4 +1,19 @@
 
+import SwiftSyntax
+import SwiftParser
+
+extension Array<Token> {
+
+    init(code: some StringProtocol) {
+        let source = Parser.parse(source: String(code))
+        let tokenizer = Tokenizer(viewMode: .sourceAccurate)
+        _ = tokenizer.visit(source)
+        self = tokenizer.tokens
+    }
+}
+
+// MARK: - Token
+
 public struct Token {
     public let value: String
     public let classification: Classification
@@ -82,4 +97,53 @@ extension Token {
     public static func regexOther(_ value: String) -> Self { Self(value: value, classification: .regexOther) }
     public static func string(_ value: String) -> Self { Self(value: value, classification: .string) }
     public static func url(_ value: String) -> Self { Self(value: value, classification: .url) }
+}
+
+// MARK: - Tokenizer
+
+private final class Tokenizer: SyntaxRewriter {
+
+    var tokens: [Token] = []
+
+    override func visit(_ token: TokenSyntax) -> TokenSyntax {
+        tokens.append(contentsOf: token.tokens)
+        return super.visit(token)
+    }
+}
+
+extension TokenSyntax {
+
+    fileprivate var tokens: [Token] {
+        let leading = leadingTrivia.pieces.map(Token.init)
+        let token = Token.plain(text)
+        let trailing = trailingTrivia.pieces.map(Token.init)
+        return leading + [token] + trailing
+    }
+}
+
+extension Token {
+
+    fileprivate init(_ piece: TriviaPiece) {
+        switch piece {
+        case let .backslashes(count): self = .plain(repeating: "\\", count: count)
+        case let .blockComment(string): self = .comment(string)
+        case let .carriageReturns(count): self = .plain(repeating: "", count: count)
+        case let .carriageReturnLineFeeds(count): self = .plain(repeating: "", count: count)
+        case let .docBlockComment(string): self = .commentDoc(string)
+        case let .docLineComment(string): self = .commentDoc(string)
+        case let .formfeeds(count): self = .plain(repeating: "", count: count)
+        case let .lineComment(string): self = .comment(string)
+        case let .newlines(count): self = .plain(repeating: "\n", count: count)
+        case let .pounds(count): self = .plain(repeating: "#", count: count)
+        case let .shebang(string): self = .plain(string)
+        case let .spaces(count): self = .plain(repeating: " ", count: count)
+        case let .tabs(count): self = .plain(repeating: "\t", count: count)
+        case let .unexpectedText(string): self = .plain(string)
+        case let .verticalTabs(count): self = .plain(repeating: "", count: count)
+        }
+    }
+
+    private static func plain(repeating string: String, count: Int) -> Self {
+        .plain(String(repeating: string, count: count))
+    }
 }
