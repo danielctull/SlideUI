@@ -1,6 +1,26 @@
 
 import SwiftUI
 
+public struct Code: View {
+
+    private let tokens: [Token]
+
+    public var body: some View {
+        TokenView(tokens: tokens)
+    }
+}
+
+extension Code {
+
+    public init(_ code: some StringProtocol) {
+        self.init(tokens: [])
+    }
+
+    public init(_ code: () -> some StringProtocol) {
+        self.init(tokens: [])
+    }
+}
+
 public struct TokenView: View {
     
     @Environment(\.codeStyle) var style
