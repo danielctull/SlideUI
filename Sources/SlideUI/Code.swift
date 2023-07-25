@@ -24,12 +24,12 @@ public struct TokenView: View {
 
 public struct Token {
     public let value: String
-    public let kind: Kind
+    public let classification: Classification
 }
 
 extension Token {
 
-    public struct Kind: Equatable, Hashable, Sendable {
+    public struct Classification: Equatable, Hashable, Sendable {
         private let name: String
         private init(_ name: String) {
             self.name = name
@@ -37,7 +37,7 @@ extension Token {
     }
 }
 
-extension Token.Kind {
+extension Token.Classification {
     public static let attribute = Self("attribute")
     public static let character = Self("character")
     public static let comment = Self("comment")
@@ -73,38 +73,38 @@ extension Token.Kind {
 }
 
 extension Token {
-    public static func attribute(_ value: String) -> Self { Self(value: value, kind: .attribute) }
-    public static func character(_ value: String) -> Self { Self(value: value, kind: .character) }
-    public static func comment(_ value: String) -> Self { Self(value: value, kind: .comment) }
-    public static func commentDoc(_ value: String) -> Self { Self(value: value, kind: .commentDoc) }
-    public static func commentDocKeyword(_ value: String) -> Self { Self(value: value, kind: .commentDocKeyword) }
-    public static func declarationOther(_ value: String) -> Self { Self(value: value, kind: .declarationOther) }
-    public static func declarationType(_ value: String) -> Self { Self(value: value, kind: .declarationType) }
-    public static func identifierClass(_ value: String) -> Self { Self(value: value, kind: .identifierClass) }
-    public static func identifierClassSystem(_ value: String) -> Self { Self(value: value, kind: .identifierClassSystem) }
-    public static func identifierConstant(_ value: String) -> Self { Self(value: value, kind: .identifierConstant) }
-    public static func identifierConstantSystem(_ value: String) -> Self { Self(value: value, kind: .identifierConstantSystem) }
-    public static func identifierFunction(_ value: String) -> Self { Self(value: value, kind: .identifierFunction) }
-    public static func identifierFunctionSystem(_ value: String) -> Self { Self(value: value, kind: .identifierFunctionSystem) }
-    public static func identifierMacro(_ value: String) -> Self { Self(value: value, kind: .identifierMacro) }
-    public static func identifierMacroSystem(_ value: String) -> Self { Self(value: value, kind: .identifierMacroSystem) }
-    public static func identifierType(_ value: String) -> Self { Self(value: value, kind: .identifierType) }
-    public static func identifierTypeSystem(_ value: String) -> Self { Self(value: value, kind: .identifierTypeSystem) }
-    public static func identifierVariable(_ value: String) -> Self { Self(value: value, kind: .identifierVariable) }
-    public static func identifierVariableSystem(_ value: String) -> Self { Self(value: value, kind: .identifierVariableSystem) }
-    public static func keyword(_ value: String) -> Self { Self(value: value, kind: .keyword) }
-    public static func mark(_ value: String) -> Self { Self(value: value, kind: .mark) }
-    public static func markupCode(_ value: String) -> Self { Self(value: value, kind: .markupCode) }
-    public static func number(_ value: String) -> Self { Self(value: value, kind: .number) }
-    public static func plain(_ value: String) -> Self { Self(value: value, kind: .plain) }
-    public static func preprocessor(_ value: String) -> Self { Self(value: value, kind: .preprocessor) }
-    public static func regex(_ value: String) -> Self { Self(value: value, kind: .regex) }
-    public static func regexCapturename(_ value: String) -> Self { Self(value: value, kind: .regexCapturename) }
-    public static func regexCharname(_ value: String) -> Self { Self(value: value, kind: .regexCharname) }
-    public static func regexNumber(_ value: String) -> Self { Self(value: value, kind: .regexNumber) }
-    public static func regexOther(_ value: String) -> Self { Self(value: value, kind: .regexOther) }
-    public static func string(_ value: String) -> Self { Self(value: value, kind: .string) }
-    public static func url(_ value: String) -> Self { Self(value: value, kind: .url) }
+    public static func attribute(_ value: String) -> Self { Self(value: value, classification: .attribute) }
+    public static func character(_ value: String) -> Self { Self(value: value, classification: .character) }
+    public static func comment(_ value: String) -> Self { Self(value: value, classification: .comment) }
+    public static func commentDoc(_ value: String) -> Self { Self(value: value, classification: .commentDoc) }
+    public static func commentDocKeyword(_ value: String) -> Self { Self(value: value, classification: .commentDocKeyword) }
+    public static func declarationOther(_ value: String) -> Self { Self(value: value, classification: .declarationOther) }
+    public static func declarationType(_ value: String) -> Self { Self(value: value, classification: .declarationType) }
+    public static func identifierClass(_ value: String) -> Self { Self(value: value, classification: .identifierClass) }
+    public static func identifierClassSystem(_ value: String) -> Self { Self(value: value, classification: .identifierClassSystem) }
+    public static func identifierConstant(_ value: String) -> Self { Self(value: value, classification: .identifierConstant) }
+    public static func identifierConstantSystem(_ value: String) -> Self { Self(value: value, classification: .identifierConstantSystem) }
+    public static func identifierFunction(_ value: String) -> Self { Self(value: value, classification: .identifierFunction) }
+    public static func identifierFunctionSystem(_ value: String) -> Self { Self(value: value, classification: .identifierFunctionSystem) }
+    public static func identifierMacro(_ value: String) -> Self { Self(value: value, classification: .identifierMacro) }
+    public static func identifierMacroSystem(_ value: String) -> Self { Self(value: value, classification: .identifierMacroSystem) }
+    public static func identifierType(_ value: String) -> Self { Self(value: value, classification: .identifierType) }
+    public static func identifierTypeSystem(_ value: String) -> Self { Self(value: value, classification: .identifierTypeSystem) }
+    public static func identifierVariable(_ value: String) -> Self { Self(value: value, classification: .identifierVariable) }
+    public static func identifierVariableSystem(_ value: String) -> Self { Self(value: value, classification: .identifierVariableSystem) }
+    public static func keyword(_ value: String) -> Self { Self(value: value, classification: .keyword) }
+    public static func mark(_ value: String) -> Self { Self(value: value, classification: .mark) }
+    public static func markupCode(_ value: String) -> Self { Self(value: value, classification: .markupCode) }
+    public static func number(_ value: String) -> Self { Self(value: value, classification: .number) }
+    public static func plain(_ value: String) -> Self { Self(value: value, classification: .plain) }
+    public static func preprocessor(_ value: String) -> Self { Self(value: value, classification: .preprocessor) }
+    public static func regex(_ value: String) -> Self { Self(value: value, classification: .regex) }
+    public static func regexCapturename(_ value: String) -> Self { Self(value: value, classification: .regexCapturename) }
+    public static func regexCharname(_ value: String) -> Self { Self(value: value, classification: .regexCharname) }
+    public static func regexNumber(_ value: String) -> Self { Self(value: value, classification: .regexNumber) }
+    public static func regexOther(_ value: String) -> Self { Self(value: value, classification: .regexOther) }
+    public static func string(_ value: String) -> Self { Self(value: value, classification: .string) }
+    public static func url(_ value: String) -> Self { Self(value: value, classification: .url) }
 }
 
 // MARK: - Code Style

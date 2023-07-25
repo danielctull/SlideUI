@@ -37,7 +37,7 @@ struct ContentView: View {
 extension CodeStyle {
 
     static let mine = CodeStyle { token in
-        switch token.kind {
+        switch token.classification {
         case .attribute: Color(red: 0.505801, green: 0.371396, blue: 0.012096, opacity: 1)
         case .character: Color(red: 0.11, green: 0, blue: 0.81, opacity: 1)
         case .comment: Color(red: 0, green: 0.456, blue: 0, opacity: 1)
@@ -73,7 +73,7 @@ extension CodeStyle {
         default: Color(red: 0, green: 0, blue: 0, opacity: 0.85)
         }
     } font: { token in
-        switch token.kind {
+        switch token.classification {
         case .comment: .system(size: .font, weight: .light, design: .monospaced)
         case .commentDoc: .system(size: .font, weight: .light, design: .monospaced).italic()
         case .commentDocKeyword: .system(size: .font, weight: .light, design: .monospaced).italic()
