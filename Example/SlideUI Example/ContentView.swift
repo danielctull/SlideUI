@@ -10,8 +10,15 @@ struct ContentView: View {
                 Code {
                     """
                     // This is a comment
-                    func foo() {
-                        print("Hello, world!")
+                    private final class Tokenizer: SyntaxRewriter {
+
+                        var tokens: [Token] = []
+
+                        override func visit(_ token: TokenSyntax) -> TokenSyntax {
+                            print(token, token.tokenKind, token.kind)
+                            tokens.append(contentsOf: token.tokens)
+                            return super.visit(token)
+                        }
                     }
                     """
                 }
