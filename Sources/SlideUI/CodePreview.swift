@@ -2,9 +2,9 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Code<V: View>(_ view: V) -> CodeView = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro CodePreview<V: View>(_ view: V) -> CodePreview = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
 
-public struct CodeView: View {
+public struct CodePreview: View {
 
     let code: String
     let output: AnyView
