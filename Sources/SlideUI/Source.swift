@@ -2,7 +2,7 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Source(_ source: Any) -> Source = #externalMacro(module: "SlideUIMacros", type: "SourceMacro")
+public macro Source(_ source: () -> Any) -> Source = #externalMacro(module: "SlideUIMacros", type: "SourceMacro")
 
 public struct Source: View {
 
