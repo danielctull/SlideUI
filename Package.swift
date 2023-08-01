@@ -18,6 +18,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax", branch: "main"),
+        .package(url: "https://github.com/apple/swift-format", branch: "main"),
     ],
     targets: [
 
@@ -36,6 +37,7 @@ let package = Package(
         .macro(
             name: "SlideUIMacros",
             dependencies: [
+                .product(name: "SwiftFormat", package: "swift-format"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),

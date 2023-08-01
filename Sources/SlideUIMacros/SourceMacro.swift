@@ -1,4 +1,5 @@
 
+import SwiftFormat
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -17,8 +18,13 @@ public struct SourceMacro: ExpressionMacro {
             throw Failure(description: "Does not have a trailing closure.")
         }
 
+        var output = ""
+        let formatter = SwiftFormatter(configuration: .init())
+        let file = SourceFileSyntax(statements: closure.statements)
+        try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
+
         return """
-            Source(source: \(literal: closure.statements.map(\.trimmedDescription).joined(separator: "\n")))
+            Source(source: \(literal: output))
             """
     }
 }
