@@ -2,9 +2,9 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Source(_ source: () -> Any) -> Source = #externalMacro(module: "SlideUIMacros", type: "SourceMacro")
+public macro Code(_ source: () -> Any) -> Code = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
 
-public struct Source: View {
+public struct Code: View {
 
     @Environment(\.sourceStyle) private var style
     private let source: String
@@ -14,14 +14,14 @@ public struct Source: View {
     }
 
     public var body: some View {
-        let configuration = SourceStyleConfiguration(source: Text(source))
+        let configuration = CodeStyleConfiguration(source: Text(source))
         AnyView(style.resolve(configuration: configuration))
     }
 }
 
 // MARK: - Default Style
 
-private struct DefaultSourceStyle: SourceStyle {
+private struct DefaultCodeStyle: CodeStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.source
@@ -33,41 +33,41 @@ private struct DefaultSourceStyle: SourceStyle {
 
 extension View {
 
-    func sourceStyle(_ style: some SourceStyle) -> some View {
+    func sourceStyle(_ style: some CodeStyle) -> some View {
         environment(\.sourceStyle, style)
     }
 }
 
-protocol SourceStyle: DynamicProperty {
+protocol CodeStyle: DynamicProperty {
 
-    typealias Configuration = SourceStyleConfiguration
+    typealias Configuration = CodeStyleConfiguration
     associatedtype Body : View
 
     /// Creates a view that represents the body of a source view.
     ///
-    /// The system calls this method for each ``SourceView`` instance in a
+    /// The system calls this method for each ``CodeView`` instance in a
     /// view hierarchy where this style is the current source style.
     ///
     /// - Parameter configuration: The properties of the source view.
     @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
-private struct SourceStyleKey: EnvironmentKey {
-    static var defaultValue: any SourceStyle = DefaultSourceStyle()
+private struct CodeStyleKey: EnvironmentKey {
+    static var defaultValue: any CodeStyle = DefaultCodeStyle()
 }
 
 extension EnvironmentValues {
 
-    fileprivate var sourceStyle: any SourceStyle {
-        get { self[SourceStyleKey.self] }
-        set { self[SourceStyleKey.self] = newValue }
+    fileprivate var sourceStyle: any CodeStyle {
+        get { self[CodeStyleKey.self] }
+        set { self[CodeStyleKey.self] = newValue }
     }
 }
 
-struct SourceStyleConfiguration {
+struct CodeStyleConfiguration {
 
     /// A type-erased source view.
-    struct Source: View {
+    struct Code: View {
         fileprivate init(_ view: some View) {
             base = AnyView(view)
         }
@@ -75,21 +75,21 @@ struct SourceStyleConfiguration {
         var body: some View { base }
     }
 
-    let source: Source
+    let source: Code
 
     fileprivate init(source: some View) {
-        self.source = Source(source)
+        self.source = Code(source)
     }
 }
 
-extension SourceStyle {
+extension CodeStyle {
 
     fileprivate func resolve(configuration: Configuration) -> some View {
-        ResolvedSourceStyle(style: self, configuration: configuration)
+        ResolvedCodeStyle(style: self, configuration: configuration)
     }
 }
 
-private struct ResolvedSourceStyle<Style: SourceStyle>: View {
+private struct ResolvedCodeStyle<Style: CodeStyle>: View {
 
     let style: Style
     let configuration: Style.Configuration

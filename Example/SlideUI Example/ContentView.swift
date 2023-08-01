@@ -11,7 +11,7 @@ struct ContentView: View {
             Slide(header: "Slide 1") {
                 Text("This is how to make a red square.")
                 #CodePreview(Color.red.frame(width: 100, height: 100))
-                #Source {
+                #Code {
                     struct Foo {
                         let bar: Bar
                     }

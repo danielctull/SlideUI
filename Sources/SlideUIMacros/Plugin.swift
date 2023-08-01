@@ -7,6 +7,6 @@ struct SlideUIPlugin: CompilerPlugin {
 
     let providingMacros: [Macro.Type] = [
         CodePreviewMacro.self,
-        SourceMacro.self,
+        CodeMacro.self,
     ]
 }
