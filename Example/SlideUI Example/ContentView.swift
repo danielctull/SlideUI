@@ -25,6 +25,7 @@ struct ContentView: View {
             Slide(header: "Slide 2") { Text("This is some content two") }
             Slide(header: "Slide 3") { Text("This is some content three") }
         }
+        .codePreviewStyle(.vertical)
         .slideStyle(CustomSlideStyle())
     }
 }

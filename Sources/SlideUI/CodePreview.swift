@@ -26,12 +26,12 @@ public struct CodePreview<Content: View>: View {
 // MARK: - Horizontal Style
 
 extension CodePreviewStyle where Self == HorizontalCodePreviewStyle {
-    static var horizontal: Self { Self() }
+    public static var horizontal: Self { Self() }
 }
 
-private struct HorizontalCodePreviewStyle: CodePreviewStyle {
+public struct HorizontalCodePreviewStyle: CodePreviewStyle {
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.code
             configuration.content
@@ -42,12 +42,12 @@ private struct HorizontalCodePreviewStyle: CodePreviewStyle {
 // MARK: - Vertical Style
 
 extension CodePreviewStyle where Self == VerticalCodePreviewStyle {
-    static var vertical: Self { Self() }
+    public static var vertical: Self { Self() }
 }
 
-private struct VerticalCodePreviewStyle: CodePreviewStyle {
+public struct VerticalCodePreviewStyle: CodePreviewStyle {
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         VStack {
             configuration.code
             configuration.content
@@ -59,12 +59,12 @@ private struct VerticalCodePreviewStyle: CodePreviewStyle {
 
 extension View {
 
-    func codePreviewStyle(_ style: some CodePreviewStyle) -> some View {
+    public func codePreviewStyle(_ style: some CodePreviewStyle) -> some View {
         environment(\.codePreviewStyle, style)
     }
 }
 
-protocol CodePreviewStyle: DynamicProperty {
+public protocol CodePreviewStyle: DynamicProperty {
 
     typealias Configuration = CodePreviewStyleConfiguration
     associatedtype Body : View
@@ -90,28 +90,28 @@ extension EnvironmentValues {
     }
 }
 
-struct CodePreviewStyleConfiguration {
+public struct CodePreviewStyleConfiguration {
 
     /// A type-erased source view.
-    struct Code: View {
+    public struct Code: View {
         fileprivate init(_ view: some View) {
             base = AnyView(view)
         }
         private let base: AnyView
-        var body: some View { base }
+        public var body: some View { base }
     }
 
     /// A type-erased content view.
-    struct Content: View {
+    public struct Content: View {
         fileprivate init(_ view: some View) {
             base = AnyView(view)
         }
         private let base: AnyView
-        var body: some View { base }
+        public var body: some View { base }
     }
 
-    let code: Code
-    let content: Content
+    public let code: Code
+    public let content: Content
 
     fileprivate init(code: some View, content: some View) {
         self.code = Code(code)
