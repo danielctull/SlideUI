@@ -17,7 +17,9 @@ public struct CodePreviewMacro: ExpressionMacro {
             CodePreview {
                 \(closure.statements)
             } code: {
-                \(literal: closure.statements.description)
+                #Code {
+                    \(closure.statements)
+                }
             }
             """
     }

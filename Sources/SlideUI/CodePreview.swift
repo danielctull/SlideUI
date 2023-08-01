@@ -6,10 +6,10 @@ public macro CodePreview<Content: View>(@ViewBuilder _ content: () -> Content) -
 
 public struct CodePreview: View {
 
-    let code: String
+    let code: Code
     let output: AnyView
 
-    public init(@ViewBuilder output: () -> some View, code: () -> String) {
+    public init(@ViewBuilder output: () -> some View, code: () -> Code) {
         self.code = code()
         self.output = AnyView(output())
     }
@@ -17,7 +17,7 @@ public struct CodePreview: View {
     public var body: some View {
         HStack {
             Color.clear.overlay {
-                Text(code)
+                code
             }
             Color.clear.overlay {
                 output
