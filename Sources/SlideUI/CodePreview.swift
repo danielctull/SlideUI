@@ -92,21 +92,13 @@ extension EnvironmentValues {
 
 public struct CodePreviewStyleConfiguration {
 
-    /// A type-erased source view.
     public struct Code: View {
-        fileprivate init(_ view: some View) {
-            base = AnyView(view)
-        }
-        private let base: AnyView
+        fileprivate let base: AnyView
         public var body: some View { base }
     }
 
-    /// A type-erased content view.
     public struct Content: View {
-        fileprivate init(_ view: some View) {
-            base = AnyView(view)
-        }
-        private let base: AnyView
+        fileprivate let base: AnyView
         public var body: some View { base }
     }
 
@@ -114,8 +106,8 @@ public struct CodePreviewStyleConfiguration {
     public let content: Content
 
     fileprivate init(code: some View, content: some View) {
-        self.code = Code(code)
-        self.content = Content(content)
+        self.code = Code(base: AnyView(code))
+        self.content = Content(base: AnyView(content))
     }
 }
 

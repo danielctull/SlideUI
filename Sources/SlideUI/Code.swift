@@ -70,19 +70,15 @@ extension EnvironmentValues {
 
 public struct CodeStyleConfiguration {
 
-    /// A type-erased code view.
     public struct Code: View {
-        fileprivate init(_ view: some View) {
-            base = AnyView(view)
-        }
-        private let base: AnyView
+        fileprivate let base: AnyView
         public var body: some View { base }
     }
 
     public let code: Code
 
     fileprivate init(code: some View) {
-        self.code = Code(code)
+        self.code = Code(base: AnyView(code))
     }
 }
 
