@@ -9,8 +9,8 @@ public struct Code: View {
     @Environment(\.codeStyle) private var style
     private let code: String
 
-    public init(_ code: String) {
-        self.code = code
+    public init(_ code: () -> String) {
+        self.code = code()
     }
 
     public var body: some View {
