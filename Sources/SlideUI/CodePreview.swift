@@ -2,16 +2,16 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro CodePreview<Content: View>(@ViewBuilder _ content: () -> Content) -> CodePreview = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
+public macro CodePreview<Content: View>(@ViewBuilder _ content: () -> Content) -> CodePreview<Content> = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
 
-public struct CodePreview: View {
+public struct CodePreview<Content: View>: View {
 
-    let code: Code
-    let output: AnyView
+    private let code: Code
+    private let content: Content
 
-    public init(@ViewBuilder output: () -> some View, code: () -> Code) {
+    public init(@ViewBuilder content: () -> Content, code: () -> Code) {
         self.code = code()
-        self.output = AnyView(output())
+        self.content = content()
     }
 
     public var body: some View {
@@ -20,7 +20,7 @@ public struct CodePreview: View {
                 code
             }
             Color.clear.overlay {
-                output
+                content
             }
         }
     }
