@@ -7,17 +7,17 @@ public struct CodePreviewMacro: ExpressionMacro {
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
         in context: some MacroExpansionContext
-    ) -> ExprSyntax {
+    ) throws -> ExprSyntax {
 
-        guard let argument = node.argumentList.first?.expression else {
-            fatalError("compiler bug: the macro does not have any arguments")
+        guard let closure = node.trailingClosure else {
+            throw Failure(description: "Does not have a trailing closure.")
         }
 
         return """
             CodePreview {
-                \(argument)
+                \(closure.statements)
             } code: {
-                \(literal: argument.description)
+                \(literal: closure.statements.description)
             }
             """
     }

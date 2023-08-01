@@ -10,7 +10,9 @@ struct ContentView: View {
         Presentation {
             Slide(header: "Slide 1") {
                 Text("This is how to make a red square.")
-                #CodePreview(Color.red.frame(width: 100, height: 100))
+                #CodePreview {
+                    Color.red.frame(width: 100, height: 100)
+                }
                 #Code {
                     struct Foo {
                         let bar: Bar
