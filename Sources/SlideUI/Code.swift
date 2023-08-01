@@ -21,9 +21,13 @@ public struct Code: View {
 
 // MARK: - Default Style
 
-private struct DefaultCodeStyle: CodeStyle {
+extension CodeStyle where Self == DefaultCodeStyle {
+    public static var `default`: Self { Self() }
+}
 
-    func makeBody(configuration: Configuration) -> some View {
+public struct DefaultCodeStyle: CodeStyle {
+
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.code
             .font(.system(size: 48, weight: .regular, design: .monospaced))
     }
@@ -33,12 +37,12 @@ private struct DefaultCodeStyle: CodeStyle {
 
 extension View {
 
-    func codeStyle(_ style: some CodeStyle) -> some View {
+    public func codeStyle(_ style: some CodeStyle) -> some View {
         environment(\.codeStyle, style)
     }
 }
 
-protocol CodeStyle: DynamicProperty {
+public protocol CodeStyle: DynamicProperty {
 
     typealias Configuration = CodeStyleConfiguration
     associatedtype Body : View
@@ -64,18 +68,18 @@ extension EnvironmentValues {
     }
 }
 
-struct CodeStyleConfiguration {
+public struct CodeStyleConfiguration {
 
     /// A type-erased code view.
-    struct Code: View {
+    public struct Code: View {
         fileprivate init(_ view: some View) {
             base = AnyView(view)
         }
         private let base: AnyView
-        var body: some View { base }
+        public var body: some View { base }
     }
 
-    let code: Code
+    public let code: Code
 
     fileprivate init(code: some View) {
         self.code = Code(code)
