@@ -2,19 +2,19 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Code(_ source: () -> Any) -> Code = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro Code(_ code: () -> Any) -> Code = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
 
 public struct Code: View {
 
-    @Environment(\.sourceStyle) private var style
-    private let source: String
+    @Environment(\.codeStyle) private var style
+    private let code: String
 
-    public init(source: String) {
-        self.source = source
+    public init(_ code: String) {
+        self.code = code
     }
 
     public var body: some View {
-        let configuration = CodeStyleConfiguration(source: Text(source))
+        let configuration = CodeStyleConfiguration(code: Text(code))
         AnyView(style.resolve(configuration: configuration))
     }
 }
@@ -24,7 +24,7 @@ public struct Code: View {
 private struct DefaultCodeStyle: CodeStyle {
 
     func makeBody(configuration: Configuration) -> some View {
-        configuration.source
+        configuration.code
             .font(.system(size: 48, weight: .regular, design: .monospaced))
     }
 }
@@ -33,8 +33,8 @@ private struct DefaultCodeStyle: CodeStyle {
 
 extension View {
 
-    func sourceStyle(_ style: some CodeStyle) -> some View {
-        environment(\.sourceStyle, style)
+    func codeStyle(_ style: some CodeStyle) -> some View {
+        environment(\.codeStyle, style)
     }
 }
 
@@ -43,12 +43,12 @@ protocol CodeStyle: DynamicProperty {
     typealias Configuration = CodeStyleConfiguration
     associatedtype Body : View
 
-    /// Creates a view that represents the body of a source view.
+    /// Creates a view that represents the body of a code view.
     ///
     /// The system calls this method for each ``CodeView`` instance in a
-    /// view hierarchy where this style is the current source style.
+    /// view hierarchy where this style is the current code style.
     ///
-    /// - Parameter configuration: The properties of the source view.
+    /// - Parameter configuration: The properties of the code view.
     @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
@@ -58,7 +58,7 @@ private struct CodeStyleKey: EnvironmentKey {
 
 extension EnvironmentValues {
 
-    fileprivate var sourceStyle: any CodeStyle {
+    fileprivate var codeStyle: any CodeStyle {
         get { self[CodeStyleKey.self] }
         set { self[CodeStyleKey.self] = newValue }
     }
@@ -66,7 +66,7 @@ extension EnvironmentValues {
 
 struct CodeStyleConfiguration {
 
-    /// A type-erased source view.
+    /// A type-erased code view.
     struct Code: View {
         fileprivate init(_ view: some View) {
             base = AnyView(view)
@@ -75,10 +75,10 @@ struct CodeStyleConfiguration {
         var body: some View { base }
     }
 
-    let source: Code
+    let code: Code
 
-    fileprivate init(source: some View) {
-        self.source = Code(source)
+    fileprivate init(code: some View) {
+        self.code = Code(code)
     }
 }
 

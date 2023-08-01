@@ -24,7 +24,7 @@ public struct CodeMacro: ExpressionMacro {
         try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
 
         return """
-            Code(source: \(literal: output))
+            Code(\(literal: output))
             """
     }
 }
