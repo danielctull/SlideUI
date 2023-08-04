@@ -2,11 +2,26 @@
 import SlideUI
 import SwiftUI
 
+struct Bar {}
+
 struct ContentView: View {
 
     var body: some View {
         Presentation {
-            Slide(header: "Slide 1") { Text("This is some content one") }
+            Slide(header: "Slide 1") {
+                Text("This is how to make a red square.")
+                #CodePreview {
+                    Color.red.frame(width: 100, height: 100)
+                }
+                #Code {
+                    struct Foo {
+                        let bar: Bar
+                    }
+
+                    let foo = Foo(bar: Bar())
+                    print(foo.bar)
+                }
+            }
             Slide(header: "Slide 2") { Text("This is some content two") }
             Slide(header: "Slide 3") { Text("This is some content three") }
         }
@@ -37,6 +52,7 @@ struct CustomSlideStyle: SlideStyle {
         .padding(30)
         .foregroundColor(.white)
         .background(.black)
+        .codePreviewStyle(.vertical)
     }
 }
 

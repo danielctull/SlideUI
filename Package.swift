@@ -1,5 +1,6 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.9
 
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -11,10 +12,35 @@ let package = Package(
         .watchOS(.v9),
     ],
     products: [
-        .library(name: "SlideUI", targets: ["SlideUI"]),
+        .library(
+            name: "SlideUI",
+            targets: ["SlideUI"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-syntax", branch: "main"),
+        .package(url: "https://github.com/apple/swift-format", branch: "main"),
     ],
     targets: [
-        .target(name: "SlideUI"),
-        .testTarget(name: "SlideUITests", dependencies: ["SlideUI"]),
+
+        .target(
+            name: "SlideUI",
+            dependencies: [
+                "SlideUIMacros",
+            ]),
+
+        .testTarget(
+            name: "SlideUITests",
+            dependencies: [
+                "SlideUI",
+            ]),
+
+        .macro(
+            name: "SlideUIMacros",
+            dependencies: [
+                .product(name: "SwiftFormat", package: "swift-format"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ]),
     ]
 )
