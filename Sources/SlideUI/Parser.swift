@@ -35,7 +35,7 @@ final class Tokenizer: SyntaxRewriter {
 
     override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
         let base: String = node.base?.description ?? ""
-        let member = Token(value: node.name.text, classification: .identifierVariable)
+        let member = Token(value: node.declName.baseName.text, classification: .identifierVariable)
         members.insert(member)
 
         for token in node.tokens(viewMode: viewMode) {
@@ -156,7 +156,6 @@ extension Token {
         case .declNameArgumentList: self = .plain(token.text)
         case .declNameArgument: self = .plain(token.text)
         case .declNameArguments: self = .plain(token.text)
-        case .declName: self = .plain(token.text)
         case .deferStmt: self = .plain(token.text)
         case .deinitEffectSpecifiers: self = .plain(token.text)
         case .deinitializerDecl: self = .plain(token.text)
@@ -299,7 +298,6 @@ extension Token {
         case .primaryAssociatedTypeList: self = .plain(token.text)
         case .primaryAssociatedType: self = .plain(token.text)
         case .protocolDecl: self = .plain(token.text)
-        case .qualifiedDeclName: self = .plain(token.text)
         case .regexLiteralExpr: self = .plain(token.text)
         case .repeatWhileStmt: self = .plain(token.text)
         case .returnClause: self = .plain(token.text)
@@ -378,7 +376,6 @@ extension Token {
         case let .lineComment(string): self = .comment(string)
         case let .newlines(count): self = .plain(repeating: "\n", count: count)
         case let .pounds(count): self = .plain(repeating: "#", count: count)
-        case let .shebang(string): self = .plain(string)
         case let .spaces(count): self = .plain(repeating: " ", count: count)
         case let .tabs(count): self = .plain(repeating: "\t", count: count)
         case let .unexpectedText(string): self = .plain(string)
@@ -418,12 +415,12 @@ extension Token.Classification {
         switch token.tokenClassification.kind {
         case .attribute: self = .attribute
         case .blockComment: self = .comment
-        case .buildConfigId: self = .preprocessor
+        case .ifConfigDirective: self = .preprocessor
         case .docBlockComment: self = .commentDoc
         case .docLineComment: self = .commentDoc
         case .dollarIdentifier: self = .identifierVariable
         case .editorPlaceholder: self = .plain
-        case .floatingLiteral: self = .number
+        case .floatLiteral: self = .number
 
         case .identifier where previous == .keyword(Keyword.actor): self = .declarationType
         case .identifier where previous == .keyword(Keyword.class): self = .declarationType
@@ -443,13 +440,10 @@ extension Token.Classification {
         case .keyword: self = .keyword
         case .lineComment: self = .comment
         case .none: self = .plain
-        case .objectLiteral: self = .plain
-        case .operatorIdentifier: self = .preprocessor
-        case .poundDirective: self = .preprocessor
+        case .operator: self = .preprocessor
         case .regexLiteral: self = .regex
-        case .stringInterpolationAnchor: self = .string
         case .stringLiteral: self = .string
-        case .typeIdentifier: self = .identifierType
+        case .type: self = .identifierType
         }
     }
 }
