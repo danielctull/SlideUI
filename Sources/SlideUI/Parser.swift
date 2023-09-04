@@ -15,43 +15,65 @@ extension Array<Token> {
 
 final class Tokenizer: SyntaxRewriter {
 
-    var tokens: [Token] = []
+    var tokens: [Token] {
+        var tokens = _tokens
+        for member in members {
+            if let index = tokens.firstIndex(where: { $0.value == member.value }), tokens[index].classification == .plain {
+                tokens[index] = member
+            }
+        }
+        return tokens
+    }
+
+    private var _tokens = Array<Token>()
+    private var members = Set<Token>()
 
     override func visit(_ token: TokenSyntax) -> TokenSyntax {
-
-        if let f = token.as(FunctionDeclSyntax.self) {
-            print(f)
-        }
-//
-        print(token, token.tokenKind, token.kind, token.tokenClassification.kind, "DETERMINED:", Token.Classification(token))
-        tokens.append(contentsOf: token.tokens)
+        _tokens.append(contentsOf: token.tokens)
         return super.visit(token)
     }
 
-    override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
-//        for token in node.tokens(viewMode: viewMode) {
-//            if token.text == node.calledExpression.description.trimmingCharacters(in: .whitespacesAndNewlines) {
-//                if token.text.first?.isUppercase ?? false {
-//                    tokens.append(Token(value: token.text, classification: .identifierTypeSystem))
-//                } else {
-//                    tokens.append(Token(value: token.text, classification: .identifierFunctionSystem))
-//                }
-//            } else {
-//                tokens.append(contentsOf: token.tokens)
-//            }
-//        }
+    override func visit(_ node: MemberAccessExprSyntax) -> ExprSyntax {
+        let base: String = node.base?.description ?? ""
+        let member = Token(value: node.name.text, classification: .identifierVariable)
+        members.insert(member)
+
+        for token in node.tokens(viewMode: viewMode) {
+            if token.text == base, base.first?.isUppercase ?? false {
+                members.insert(Token(value: token.text, classification: .identifierType))
+            }
+        }
 
         return super.visit(node)
     }
 
-//    override func visit(_ node: FunctionDeclSyntax) -> FunctionDeclSyntax {
-//
-//    }
+    override func visit(_ node: FunctionCallExprSyntax) -> ExprSyntax {
+        for token in node.tokens(viewMode: viewMode) {
+            if token.text == node.calledExpression.description.trimmingCharacters(in: .whitespacesAndNewlines) {
+                let classification: Token.Classification
+                if token.text.first?.isUppercase ?? false {
+                    classification = .identifierType
+                } else {
+                    classification = .identifierFunction
+                }
+                members.insert(Token(value: token.text, classification: classification))
+            }
+        }
 
-     override func visit(_ node: FunctionParameterSyntax) -> FunctionParameterSyntax {
+        return super.visit(node)
+    }
 
-         return super.visit(node)
-     }
+    override func visit(_ node: FunctionParameterSyntax) -> FunctionParameterSyntax {
+        members.insert(Token(value: node.firstName.text, classification: .declarationOther))
+        return super.visit(node)
+    }
+
+    override func visit(_ node: LabeledExprSyntax) -> LabeledExprSyntax {
+        if let label = node.label?.text {
+            members.insert(Token(value: label, classification: .identifierFunction))
+        }
+        return super.visit(node)
+    }
 }
 
 // MARK: - Token Conversion

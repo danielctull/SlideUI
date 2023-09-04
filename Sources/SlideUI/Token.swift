@@ -1,7 +1,7 @@
 
 // MARK: - Token
 
-public struct Token {
+public struct Token: Hashable {
     public let value: String
     public let classification: Classification
 }
