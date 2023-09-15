@@ -10,6 +10,8 @@ extension SlideID: CustomStringConvertible {
     var description: String { "Index(\(id))" }
 }
 
+// MARK: - Environment
+
 private struct SlideIndexKey: EnvironmentKey {
     static var defaultValue = SlideID()
 }
@@ -20,6 +22,8 @@ extension EnvironmentValues {
         set { self[SlideIndexKey.self] = newValue }
     }
 }
+
+// MARK: - Registration
 
 private struct SlideIndexPreferenceKey: PreferenceKey {
     static var defaultValue: [SlideID] = []
