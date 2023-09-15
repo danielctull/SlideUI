@@ -15,15 +15,15 @@ public struct Presentation<Content: View>: View {
         }
     }
 
-    @State private var slides: [SlideIndex] = []
+    @State private var slides: [SlideID] = []
     private let content: () -> Content
 
     public init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content
     }
 
-    private var currentSlide: SlideIndex {
-        guard let index else { return SlideIndex() }
+    private var currentSlide: SlideID {
+        guard let index else { return SlideID() }
         return slides[index]
     }
 

@@ -5,7 +5,7 @@ public struct Slide<Header: View, Content: View, Footer: View>: View {
 
     @Environment(\.slideStyle) private var style
     @Environment(\.currentSlide) private var currentSlide
-    private let index = SlideIndex()
+    private let id = SlideID()
     private let content: Content
     private let header: Header
     private let footer: Footer
@@ -22,7 +22,7 @@ public struct Slide<Header: View, Content: View, Footer: View>: View {
 
     public var body: some View {
         Group {
-            if index == currentSlide {
+            if id == currentSlide {
                 let configuration = SlideConfiguration(
                     content: content,
                     header: header,
@@ -33,7 +33,7 @@ public struct Slide<Header: View, Content: View, Footer: View>: View {
                 Color.clear
             }
         }
-        .register(index)
+        .register(id)
     }
 }
 

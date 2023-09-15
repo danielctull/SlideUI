@@ -2,39 +2,39 @@
 import Foundation
 import SwiftUI
 
-struct SlideIndex: Equatable, Hashable {
+struct SlideID: Equatable, Hashable {
     private let id = UUID().uuidString
 }
 
-extension SlideIndex: CustomStringConvertible {
+extension SlideID: CustomStringConvertible {
     var description: String { "Index(\(id))" }
 }
 
 private struct SlideIndexKey: EnvironmentKey {
-    static var defaultValue = SlideIndex()
+    static var defaultValue = SlideID()
 }
 
 extension EnvironmentValues {
-    var currentSlide: SlideIndex {
+    var currentSlide: SlideID {
         get { self[SlideIndexKey.self] }
         set { self[SlideIndexKey.self] = newValue }
     }
 }
 
 private struct SlideIndexPreferenceKey: PreferenceKey {
-    static var defaultValue: [SlideIndex] = []
-    static func reduce(value: inout [SlideIndex], nextValue: () -> [SlideIndex]) {
+    static var defaultValue: [SlideID] = []
+    static func reduce(value: inout [SlideID], nextValue: () -> [SlideID]) {
         value.append(contentsOf: nextValue())
     }
 }
 
 extension View {
 
-    func register(_ index: SlideIndex) -> some View {
+    func register(_ index: SlideID) -> some View {
         preference(key: SlideIndexPreferenceKey.self, value: [index])
     }
 
-    func slides(_ slides: @escaping ([SlideIndex]) -> Void) -> some View {
+    func slides(_ slides: @escaping ([SlideID]) -> Void) -> some View {
         onPreferenceChange(SlideIndexPreferenceKey.self, perform: slides)
     }
 }
