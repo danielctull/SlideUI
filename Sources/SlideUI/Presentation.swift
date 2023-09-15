@@ -3,44 +3,11 @@ import SwiftUI
 
 public struct Presentation<Content: View>: View {
 
-    @State private var _index: Int?
-    
-    private var index: Int? {
-        get {
-            if slides.count > 0 {
-                return _index ?? 0
-            } else {
-                return nil
-            }
-        }
-    }
-
-    @State private var slides: [SlideID] = []
+    @State private var deck: Deck?
     private let content: () -> Content
 
     public init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content
-    }
-
-    private var currentSlide: SlideID {
-        guard let index else { return SlideID() }
-        return slides[index]
-    }
-
-    private func increment() {
-        if let index, index < slides.count - 1 {
-            _index = index + 1
-        } else {
-            _index = 0
-        }
-    }
-
-    private func decrement() {
-        if let index, index > 0 {
-            _index = index - 1
-        } else {
-            _index = 0
-        }
     }
 
     public var body: some View {
@@ -50,12 +17,12 @@ public struct Presentation<Content: View>: View {
         .overlay {
             HStack(spacing: 0) {
                 Color.white.opacity(0.0000001)
-                    .onTapGesture(perform: decrement)
+                    .onTapGesture { deck?.previous() }
                 Color.white.opacity(0.0000001)
-                    .onTapGesture(perform: increment)
+                    .onTapGesture { deck?.next() }
             }
         }
-        .environment(\.currentSlide, currentSlide)
-        .slides { slides = $0 }
+        .environment(\.currentSlide, deck?.current ?? SlideID())
+        .deck { deck = $0 }
     }
 }

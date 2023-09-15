@@ -26,19 +26,21 @@ extension EnvironmentValues {
 // MARK: - Registration
 
 private struct SlideIndexPreferenceKey: PreferenceKey {
-    static var defaultValue: [SlideID] = []
-    static func reduce(value: inout [SlideID], nextValue: () -> [SlideID]) {
-        value.append(contentsOf: nextValue())
+    static var defaultValue: Deck? = nil
+    static func reduce(value: inout Deck?, nextValue: () -> Deck?) {
+        value.appendDeck(nextValue())
     }
 }
 
 extension View {
 
-    func register(_ index: SlideID) -> some View {
-        preference(key: SlideIndexPreferenceKey.self, value: [index])
+    func register(_ id: SlideID) -> some View {
+        preference(key: SlideIndexPreferenceKey.self, value: Deck(slide: id))
     }
 
-    func slides(_ slides: @escaping ([SlideID]) -> Void) -> some View {
-        onPreferenceChange(SlideIndexPreferenceKey.self, perform: slides)
+    func deck(_ action: @escaping (Deck) -> Void) -> some View {
+        onPreferenceChange(SlideIndexPreferenceKey.self) { deck in
+            if let deck { action(deck) }
+        }
     }
 }
