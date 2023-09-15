@@ -4,6 +4,8 @@ import SwiftUI
 public struct Slide<Header: View, Content: View, Footer: View>: View {
 
     @Environment(\.slideStyle) private var style
+    @Environment(\.currentSlide) private var currentSlide
+    private let index = SlideIndex()
     private let content: Content
     private let header: Header
     private let footer: Footer
@@ -19,13 +21,19 @@ public struct Slide<Header: View, Content: View, Footer: View>: View {
     }
 
     public var body: some View {
+        Group {
+            if index == currentSlide {
+                let configuration = SlideConfiguration(
+                    content: content,
+                    header: header,
+                    footer: footer)
 
-        let configuration = SlideConfiguration(
-            content: content,
-            header: header,
-            footer: footer)
-
-        AnyView(style.resolve(configuration: configuration))
+                AnyView(style.resolve(configuration: configuration))
+            } else {
+                Color.clear
+            }
+        }
+        .register(index)
     }
 }
 

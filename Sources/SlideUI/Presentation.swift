@@ -3,47 +3,59 @@ import SwiftUI
 
 public struct Presentation<Content: View>: View {
 
-    @State private var index = 0
-    let content: () -> Content
+    @State private var _index: Int?
+    
+    private var index: Int? {
+        get {
+            if slides.count > 0 {
+                return _index ?? 0
+            } else {
+                return nil
+            }
+        }
+    }
+
+    @State private var slides: [SlideIndex] = []
+    private let content: () -> Content
 
     public init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content
     }
 
+    private var currentSlide: SlideIndex {
+        guard let index else { return SlideIndex() }
+        return slides[index]
+    }
+
+    private func increment() {
+        if let index, index < slides.count - 1 {
+            _index = index + 1
+        } else {
+            _index = 0
+        }
+    }
+
+    private func decrement() {
+        if let index, index > 0 {
+            _index = index - 1
+        } else {
+            _index = 0
+        }
+    }
+
     public var body: some View {
-        PresentationLayout(index: index) {
+        ZStack {
             content()
         }
         .overlay {
             HStack(spacing: 0) {
-                Color.red.opacity(0.0000001).onTapGesture { index -= 1 }
-                Color.red.opacity(0.0000001).onTapGesture { index += 1 }
+                Color.white.opacity(0.0000001)
+                    .onTapGesture(perform: decrement)
+                Color.white.opacity(0.0000001)
+                    .onTapGesture(perform: increment)
             }
         }
-    }
-}
-
-public struct PresentationLayout: Layout {
-
-    private let index: Int
-    public init(index: Int) {
-        self.index = index
-    }
-
-    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        proposal.replacingUnspecifiedDimensions()
-    }
-
-    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-
-        let index = max(min(subviews.count - 1, index), 0)
-
-        for (i, subview) in subviews.enumerated() {
-            if i == index {
-                subview.place(at: .zero, proposal: proposal)
-            } else {
-                subview.place(at: .zero, anchor: .bottomTrailing, proposal: proposal)
-            }
-        }
+        .environment(\.currentSlide, currentSlide)
+        .slides { slides = $0 }
     }
 }
