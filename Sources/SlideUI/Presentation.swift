@@ -18,7 +18,7 @@ extension Presentation {
     }
 }
 
-private let controlDeckID = UUID().uuidString
+private let presenterDisplayID = UUID().uuidString
 
 private struct PresentationBody<Slides: View>: Scene {
 
@@ -28,20 +28,17 @@ private struct PresentationBody<Slides: View>: Scene {
 
     public var body: some Scene {
         
-        WindowGroup {
+        WindowGroup("Presentation") {
             ZStack {
                 slides
             }
             .deck { deck = $0 }
             .environment(\.currentSlide, deck.current)
-            .onAppear { openWindow(id: controlDeckID) }
+            .onAppear { openWindow(id: presenterDisplayID) }
         }
 
-        WindowGroup(id: controlDeckID) {
-            HStack {
-                Button("Previous") { deck.previous() }
-                Button("Next") { deck.next() }
-            }
+        Window("Presenter Display", id: presenterDisplayID) {
+            PresenterDisplay(deck: $deck)
         }
     }
 }
