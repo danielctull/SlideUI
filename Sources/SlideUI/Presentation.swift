@@ -16,9 +16,11 @@ public struct Presentation<Content: View>: View {
         }
         .overlay {
             HStack(spacing: 0) {
-                Color.white.opacity(0.0000001)
+                Color.clear
+                    .contentShape(Rectangle())
                     .onTapGesture { deck.previous() }
-                Color.white.opacity(0.0000001)
+                Color.clear
+                    .contentShape(Rectangle())
                     .onTapGesture { deck.next() }
             }
         }
