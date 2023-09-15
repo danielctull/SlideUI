@@ -1,30 +1,45 @@
 
 import SwiftUI
 
-public struct Presentation<Content: View>: View {
+public protocol Presentation: App {
+
+    associatedtype Slides: View
+
+    @ViewBuilder
+    var slides: Slides { get }
+}
+
+extension Presentation {
+
+    @SceneBuilder
+    @MainActor
+    public var body: some Scene {
+        PresentationBody(slides: slides)
+    }
+}
+
+private struct PresentationBody<Slides: View>: Scene {
 
     @State private var deck = Deck()
-    private let content: () -> Content
+    let slides: Slides
 
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
-    }
-
-    public var body: some View {
-        ZStack {
-            content()
-        }
-        .overlay {
-            HStack(spacing: 0) {
-                Color.clear
-                    .contentShape(Rectangle())
-                    .onTapGesture { deck.previous() }
-                Color.clear
-                    .contentShape(Rectangle())
-                    .onTapGesture { deck.next() }
+    public var body: some Scene {
+        WindowGroup {
+            ZStack {
+                slides
             }
+            .overlay {
+                HStack(spacing: 0) {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture { deck.previous() }
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .onTapGesture { deck.next() }
+                }
+            }
+            .deck { deck = $0 }
+            .environment(\.currentSlide, deck.current)
         }
-        .environment(\.currentSlide, deck.current)
-        .deck { deck = $0 }
     }
 }
