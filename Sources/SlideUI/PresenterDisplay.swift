@@ -64,6 +64,13 @@ extension View {
     }
 }
 
+extension Scene {
+
+    public func presenterDisplayStyle(_ style: some PresenterDisplayStyle) -> some Scene {
+        environment(\.presenterDisplayStyle, style)
+    }
+}
+
 // MARK: Configuration
 
 public struct PresenterDisplayConfiguration {

@@ -153,6 +153,13 @@ extension View {
     }
 }
 
+extension Scene {
+
+    public func slideStyle(_ style: some SlideStyle) -> some Scene {
+        environment(\.slideStyle, style)
+    }
+}
+
 // MARK: Configuration
 
 public struct SlideConfiguration {
