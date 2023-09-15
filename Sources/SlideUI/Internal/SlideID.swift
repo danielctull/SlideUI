@@ -6,6 +6,10 @@ struct SlideID: Equatable, Hashable {
     private let id = UUID().uuidString
 }
 
+extension SlideID {
+    static let none = SlideID()
+}
+
 extension SlideID: CustomStringConvertible {
     var description: String { "Index(\(id))" }
 }
@@ -26,8 +30,8 @@ extension EnvironmentValues {
 // MARK: - Registration
 
 private struct SlideIndexPreferenceKey: PreferenceKey {
-    static var defaultValue: Deck? = nil
-    static func reduce(value: inout Deck?, nextValue: () -> Deck?) {
+    static var defaultValue: Deck = Deck()
+    static func reduce(value: inout Deck, nextValue: () -> Deck) {
         value.appendDeck(nextValue())
     }
 }
@@ -39,8 +43,6 @@ extension View {
     }
 
     func deck(_ action: @escaping (Deck) -> Void) -> some View {
-        onPreferenceChange(SlideIndexPreferenceKey.self) { deck in
-            if let deck { action(deck) }
-        }
+        onPreferenceChange(SlideIndexPreferenceKey.self, perform: action)
     }
 }

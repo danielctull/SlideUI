@@ -3,7 +3,7 @@ import SwiftUI
 
 public struct Presentation<Content: View>: View {
 
-    @State private var deck: Deck?
+    @State private var deck = Deck()
     private let content: () -> Content
 
     public init(@ViewBuilder content: @escaping () -> Content) {
@@ -17,12 +17,12 @@ public struct Presentation<Content: View>: View {
         .overlay {
             HStack(spacing: 0) {
                 Color.white.opacity(0.0000001)
-                    .onTapGesture { deck?.previous() }
+                    .onTapGesture { deck.previous() }
                 Color.white.opacity(0.0000001)
-                    .onTapGesture { deck?.next() }
+                    .onTapGesture { deck.next() }
             }
         }
-        .environment(\.currentSlide, deck?.current ?? SlideID())
+        .environment(\.currentSlide, deck.current)
         .deck { deck = $0 }
     }
 }

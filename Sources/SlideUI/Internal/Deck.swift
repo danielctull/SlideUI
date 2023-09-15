@@ -1,15 +1,22 @@
 
 struct Deck: Equatable, Hashable {
-    fileprivate let slides: [SlideID]
+    private let slides: [SlideID]
     private var index = 0
+
+    init() {
+        slides = [.none]
+    }
 
     init(slide: SlideID) {
         self.slides = [slide]
     }
 
-    init?(slides: [SlideID]) {
-        guard !slides.isEmpty else { return nil }
-        self.slides = slides
+    init(slides: [SlideID]) {
+        if slides.isEmpty {
+            self.slides = [.none]
+        } else {
+            self.slides = slides
+        }
     }
 
     var current: SlideID {
@@ -27,22 +34,9 @@ struct Deck: Equatable, Hashable {
             self.index = index - 1
         }
     }
-}
 
-extension Optional<Deck> {
-
-    mutating func appendDeck(_ deck: Deck?) {
-        switch (self, deck) {
-        case (let .some(lhs), let .some(rhs)):
-            var slides = lhs.slides
-            slides.append(contentsOf: rhs.slides)
-            self = Deck(slides: slides)
-        case (.none, let .some(rhs)):
-            self = rhs
-        case (.some, .none):
-            return
-        case (.none, .none):
-            return
-        }
+    mutating func appendDeck(_ deck: Deck) {
+        let slides = self.slides + deck.slides
+        self = Deck(slides: slides.filter { $0 != .none })
     }
 }
