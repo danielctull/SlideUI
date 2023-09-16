@@ -19,8 +19,8 @@ struct Deck: Equatable, Hashable {
         }
     }
 
-    var current: SlideID {
-        slides[index].id
+    var current: SlideInfo {
+        slides[index]
     }
 
     mutating func next() {

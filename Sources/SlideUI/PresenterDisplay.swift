@@ -14,7 +14,7 @@ struct PresenterDisplay: View {
             nextSlide: EmptyView(),
             previousButton: Button("Previous") { deck.previous() },
             nextButton: Button("Next") { deck.next() },
-            notes: Text("Some notes"))
+            notes: deck.current.notes)
 
         AnyView(style.resolve(configuration: configuration))
     }
@@ -38,12 +38,15 @@ public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
             }
 
             configuration.notes
+            
+            Spacer()
 
             HStack {
                 configuration.control.previous
                 configuration.control.next
             }
         }
+        .padding()
     }
 }
 
@@ -120,7 +123,9 @@ public struct PresenterDisplayConfiguration {
 
     public let preview: Preview
     public let control: Control
-    public let notes: Notes
+
+    private let _notes: () -> Notes
+    public var notes: Notes { _notes() }
 
     fileprivate init(
         previousSlide: some View,
@@ -128,7 +133,7 @@ public struct PresenterDisplayConfiguration {
         nextSlide: some View,
         previousButton: some View,
         nextButton: some View,
-        notes: some View
+        notes: @escaping () -> AnyView
     ) {
         self.preview = Preview(
             previous: Preview.Previous(base: AnyView(previousSlide)),
@@ -137,7 +142,7 @@ public struct PresenterDisplayConfiguration {
         self.control = Control(
             previous: Control.Previous(base: AnyView(previousButton)),
             next: Control.Next(base: AnyView(nextButton)))
-        self.notes = Notes(base: AnyView(notes))
+        _notes = { Notes(base: notes()) }
     }
 }
 

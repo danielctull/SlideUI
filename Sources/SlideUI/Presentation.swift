@@ -20,7 +20,7 @@ public struct Presentation<Slides: View>: Scene {
                 slides
             }
             .deck { deck = $0 }
-            .environment(\.currentSlide, deck.current)
+            .environment(\.currentSlide, deck.current.id)
             .onAppear { openWindow(id: presenterDisplayID) }
         }
 
