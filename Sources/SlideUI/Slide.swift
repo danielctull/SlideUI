@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-public struct Slide<Header: View, Content: View, Footer: View>: View {
+public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: View {
 
     @Environment(\.slideStyle) private var style
     @Environment(\.currentSlide) private var currentSlide
@@ -9,15 +9,18 @@ public struct Slide<Header: View, Content: View, Footer: View>: View {
     private let content: Content
     private let header: Header
     private let footer: Footer
+    private let notes: () -> Notes
 
     public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder header: () -> Header,
-        @ViewBuilder footer: () -> Footer
+        @ViewBuilder footer: () -> Footer,
+        @ViewBuilder notes: @escaping () -> Notes
     ) {
         self.content = content()
         self.header = header()
         self.footer = footer()
+        self.notes = notes
     }
 
     public var body: some View {
@@ -45,30 +48,33 @@ extension Slide {
         header: String,
         footer: String,
         @ViewBuilder content: () -> Content
-    ) where Header == Text, Footer == Text {
+    ) where Header == Text, Footer == Text, Notes == EmptyView {
         self.init {
             content()
         } header: {
             Text(header)
         } footer: {
             Text(footer)
+        } notes: {
+            EmptyView()
         }
     }
 
     public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder header: () -> Header
-    ) where Footer == EmptyView {
+    ) where Footer == EmptyView, Notes == EmptyView {
         self.init(
             content: content,
             header: header,
-            footer: EmptyView.init)
+            footer: EmptyView.init,
+            notes: EmptyView.init)
     }
 
     public init(
         header: String,
         @ViewBuilder content: () -> Content
-    ) where Header == Text, Footer == EmptyView {
+    ) where Header == Text, Footer == EmptyView, Notes == EmptyView {
         self.init {
             content()
         } header: {
@@ -79,18 +85,19 @@ extension Slide {
     public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer
-    ) where Header == EmptyView {
+    ) where Header == EmptyView, Notes == EmptyView {
         self.init(
             content: content,
             header: EmptyView.init,
-            footer: footer)
+            footer: footer,
+            notes: EmptyView.init)
     }
 
 
     public init(
         footer: String,
         @ViewBuilder content: () -> Content
-    ) where Header == EmptyView, Footer == Text {
+    ) where Header == EmptyView, Footer == Text, Notes == EmptyView {
         self.init {
             content()
         } footer: {
@@ -100,11 +107,12 @@ extension Slide {
 
     public init(
         @ViewBuilder content: () -> Content
-    ) where Header == EmptyView, Footer == EmptyView {
+    ) where Header == EmptyView, Footer == EmptyView, Notes == EmptyView {
         self.init(
             content: content,
             header: EmptyView.init,
-            footer: EmptyView.init)
+            footer: EmptyView.init,
+            notes: EmptyView.init)
     }
 }
 
