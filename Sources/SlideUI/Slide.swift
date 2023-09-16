@@ -45,8 +45,8 @@ public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: Vie
 extension Slide {
 
     public init(
-        header: String,
-        footer: String,
+        header: LocalizedStringKey,
+        footer: LocalizedStringKey,
         @ViewBuilder content: () -> Content
     ) where Header == Text, Footer == Text, Notes == EmptyView {
         self.init {
@@ -72,7 +72,7 @@ extension Slide {
     }
 
     public init(
-        header: String,
+        header: LocalizedStringKey,
         @ViewBuilder content: () -> Content
     ) where Header == Text, Footer == EmptyView, Notes == EmptyView {
         self.init {
@@ -95,7 +95,7 @@ extension Slide {
 
 
     public init(
-        footer: String,
+        footer: LocalizedStringKey,
         @ViewBuilder content: () -> Content
     ) where Header == EmptyView, Footer == Text, Notes == EmptyView {
         self.init {
