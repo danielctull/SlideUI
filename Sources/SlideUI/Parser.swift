@@ -376,6 +376,7 @@ extension Token {
         case let .lineComment(string): self = .comment(string)
         case let .newlines(count): self = .plain(repeating: "\n", count: count)
         case let .pounds(count): self = .plain(repeating: "#", count: count)
+        case let .shebang(string): self = .plain(string)
         case let .spaces(count): self = .plain(repeating: " ", count: count)
         case let .tabs(count): self = .plain(repeating: "\t", count: count)
         case let .unexpectedText(string): self = .plain(string)
@@ -415,12 +416,13 @@ extension Token.Classification {
         switch token.tokenClassification.kind {
         case .attribute: self = .attribute
         case .blockComment: self = .comment
-        case .ifConfigDirective: self = .preprocessor
+        case .poundDirective: self = .preprocessor
+        case .buildConfigId: self = .preprocessor
         case .docBlockComment: self = .commentDoc
         case .docLineComment: self = .commentDoc
         case .dollarIdentifier: self = .identifierVariable
         case .editorPlaceholder: self = .plain
-        case .floatLiteral: self = .number
+        case .floatingLiteral: self = .number
 
         case .identifier where previous == .keyword(Keyword.actor): self = .declarationType
         case .identifier where previous == .keyword(Keyword.class): self = .declarationType
@@ -440,10 +442,11 @@ extension Token.Classification {
         case .keyword: self = .keyword
         case .lineComment: self = .comment
         case .none: self = .plain
-        case .operator: self = .preprocessor
+        case .operatorIdentifier: self = .preprocessor
         case .regexLiteral: self = .regex
         case .stringLiteral: self = .string
-        case .type: self = .identifierType
+        case .typeIdentifier: self = .identifierType
+        case .stringInterpolationAnchor: self = .plain
         }
     }
 }
