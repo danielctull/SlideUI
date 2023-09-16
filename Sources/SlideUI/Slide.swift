@@ -36,7 +36,7 @@ public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: Vie
                 Color.clear
             }
         }
-        .register(id)
+        .register(slide: SlideInfo(id: id, notes: notes))
     }
 }
 

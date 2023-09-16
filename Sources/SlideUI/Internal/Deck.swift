@@ -1,17 +1,17 @@
 
 struct Deck: Equatable, Hashable {
-    private let slides: [SlideID]
+    private let slides: [SlideInfo]
     private var index = 0
 
     init() {
         slides = [.none]
     }
 
-    init(slide: SlideID) {
+    init(slide: SlideInfo) {
         self.slides = [slide]
     }
 
-    init(slides: [SlideID]) {
+    init(slides: [SlideInfo]) {
         if slides.isEmpty {
             self.slides = [.none]
         } else {
@@ -20,7 +20,7 @@ struct Deck: Equatable, Hashable {
     }
 
     var current: SlideID {
-        slides[index]
+        slides[index].id
     }
 
     mutating func next() {

@@ -38,8 +38,8 @@ private struct SlideIndexPreferenceKey: PreferenceKey {
 
 extension View {
 
-    func register(_ id: SlideID) -> some View {
-        preference(key: SlideIndexPreferenceKey.self, value: Deck(slide: id))
+    func register(slide: SlideInfo) -> some View {
+        preference(key: SlideIndexPreferenceKey.self, value: Deck(slide: slide))
     }
 
     func deck(_ action: @escaping (Deck) -> Void) -> some View {
