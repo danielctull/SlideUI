@@ -61,6 +61,23 @@ extension Slide {
     }
 
     public init(
+        header: LocalizedStringKey,
+        footer: LocalizedStringKey,
+        notes: LocalizedStringKey,
+        @ViewBuilder content: () -> Content
+    ) where Header == Text, Footer == Text, Notes == Text {
+        self.init {
+            content()
+        } header: {
+            Text(header)
+        } footer: {
+            Text(footer)
+        } notes: {
+            Text(notes)
+        }
+    }
+
+    public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder header: () -> Header
     ) where Footer == EmptyView, Notes == EmptyView {
@@ -69,6 +86,18 @@ extension Slide {
             header: header,
             footer: EmptyView.init,
             notes: EmptyView.init)
+    }
+
+    public init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder notes: @escaping () -> Notes
+    ) where Footer == EmptyView {
+        self.init(
+            content: content,
+            header: header,
+            footer: EmptyView.init,
+            notes: notes)
     }
 
     public init(
@@ -83,6 +112,20 @@ extension Slide {
     }
 
     public init(
+        header: LocalizedStringKey,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder notes: @escaping () -> Notes
+    ) where Header == Text, Footer == EmptyView {
+        self.init {
+            content()
+        } header: {
+            Text(header)
+        } notes: {
+            notes()
+        }
+    }
+
+    public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer
     ) where Header == EmptyView, Notes == EmptyView {
@@ -93,6 +136,17 @@ extension Slide {
             notes: EmptyView.init)
     }
 
+    public init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer,
+        @ViewBuilder notes: @escaping () -> Notes
+    ) where Header == EmptyView {
+        self.init(
+            content: content,
+            header: EmptyView.init,
+            footer: footer,
+            notes: notes)
+    }
 
     public init(
         footer: LocalizedStringKey,
@@ -106,6 +160,20 @@ extension Slide {
     }
 
     public init(
+        footer: LocalizedStringKey,
+        notes: LocalizedStringKey,
+        @ViewBuilder content: () -> Content
+    ) where Header == EmptyView, Footer == Text, Notes == Text {
+        self.init {
+            content()
+        } footer: {
+            Text(footer)
+        } notes: {
+            Text(notes)
+        }
+    }
+
+    public init(
         @ViewBuilder content: () -> Content
     ) where Header == EmptyView, Footer == EmptyView, Notes == EmptyView {
         self.init(
@@ -113,6 +181,17 @@ extension Slide {
             header: EmptyView.init,
             footer: EmptyView.init,
             notes: EmptyView.init)
+    }
+
+    public init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder notes: @escaping () -> Notes
+    ) where Header == EmptyView, Footer == EmptyView {
+        self.init(
+            content: content,
+            header: EmptyView.init,
+            footer: EmptyView.init,
+            notes: notes)
     }
 }
 
