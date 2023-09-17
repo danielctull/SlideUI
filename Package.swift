@@ -26,6 +26,9 @@ let package = Package(
             name: "SlideUI",
             dependencies: [
                 "SlideUIMacros",
+                .product(name: "SwiftIDEUtils", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftParser", package: "swift-syntax"),
             ]),
 
         .testTarget(

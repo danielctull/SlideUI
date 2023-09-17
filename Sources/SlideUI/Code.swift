@@ -7,14 +7,14 @@ public macro Code(_ code: () -> Any) -> Code = #externalMacro(module: "SlideUIMa
 public struct Code: View {
 
     @Environment(\.codeStyle) private var style
-    private let code: String
+    private let tokens: [Token]
 
     public init(_ code: () -> String) {
-        self.code = code()
+        tokens = Array(code: code())
     }
 
     public var body: some View {
-        let configuration = CodeStyleConfiguration(code: Text(code))
+        let configuration = CodeStyleConfiguration(tokens: tokens)
         AnyView(style.resolve(configuration: configuration))
     }
 }
@@ -28,8 +28,11 @@ extension CodeStyle where Self == DefaultCodeStyle {
 public struct DefaultCodeStyle: CodeStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.code
-            .font(.system(size: 48, weight: .regular, design: .monospaced))
+        configuration.color { _ in
+            .black
+        } font: { _ in
+            .system(size: 48, weight: .regular, design: .monospaced)
+        }
     }
 }
 
@@ -75,10 +78,20 @@ public struct CodeStyleConfiguration {
         public var body: some View { base }
     }
 
-    public let code: Code
+    fileprivate let tokens: [Token]
 
-    fileprivate init(code: some View) {
-        self.code = Code(base: AnyView(code))
+    public func color(
+        _ color: (Token) -> Color,
+        font: (Token) -> Font
+    ) -> Code {
+        let text = tokens.reduce(Text("")) { accumulated, token in
+            let text: Text = Text(token.value)
+                .font(font(token))
+                .foregroundColor(color(token))
+            return accumulated + text
+        }
+
+        return Code(base: AnyView(text))
     }
 }
 

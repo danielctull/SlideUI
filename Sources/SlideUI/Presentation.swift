@@ -1,49 +1,31 @@
 
 import SwiftUI
 
-public struct Presentation<Content: View>: View {
+private let presenterDisplayID = UUID().uuidString
 
-    @State private var index = 0
-    let content: () -> Content
+public struct Presentation<Slides: View>: Scene {
 
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
+    @Environment(\.openWindow) private var openWindow
+    @State private var deck = Deck()
+    let slides: Slides
+
+    public init(@ViewBuilder slides: () -> Slides) {
+        self.slides = slides()
     }
 
-    public var body: some View {
-        PresentationLayout(index: index) {
-            content()
-        }
-        .overlay {
-            HStack(spacing: 0) {
-                Color.red.opacity(0.0000001).onTapGesture { index -= 1 }
-                Color.red.opacity(0.0000001).onTapGesture { index += 1 }
+    public var body: some Scene {
+        
+        WindowGroup("Presentation") {
+            ZStack {
+                slides
             }
+            .deck { deck = $0 }
+            .environment(\.currentSlide, deck.current.id)
+            .onAppear { openWindow(id: presenterDisplayID) }
         }
-    }
-}
 
-public struct PresentationLayout: Layout {
-
-    private let index: Int
-    public init(index: Int) {
-        self.index = index
-    }
-
-    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        proposal.replacingUnspecifiedDimensions()
-    }
-
-    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-
-        let index = max(min(subviews.count - 1, index), 0)
-
-        for (i, subview) in subviews.enumerated() {
-            if i == index {
-                subview.place(at: .zero, proposal: proposal)
-            } else {
-                subview.place(at: .zero, anchor: .bottomTrailing, proposal: proposal)
-            }
+        Window("Presenter Display", id: presenterDisplayID) {
+            PresenterDisplay(deck: $deck)
         }
     }
 }

@@ -1,31 +1,42 @@
 
 import SwiftUI
 
-public struct Slide<Header: View, Content: View, Footer: View>: View {
+public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: View {
 
     @Environment(\.slideStyle) private var style
+    @Environment(\.currentSlide) private var currentSlide
+    private let id = SlideID()
     private let content: Content
     private let header: Header
     private let footer: Footer
+    private let notes: () -> Notes
 
     public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder header: () -> Header,
-        @ViewBuilder footer: () -> Footer
+        @ViewBuilder footer: () -> Footer,
+        @ViewBuilder notes: @escaping () -> Notes
     ) {
         self.content = content()
         self.header = header()
         self.footer = footer()
+        self.notes = notes
     }
 
     public var body: some View {
+        Group {
+            if id == currentSlide {
+                let configuration = SlideConfiguration(
+                    content: content,
+                    header: header,
+                    footer: footer)
 
-        let configuration = SlideConfiguration(
-            content: content,
-            header: header,
-            footer: footer)
-
-        AnyView(style.resolve(configuration: configuration))
+                AnyView(style.resolve(configuration: configuration))
+            } else {
+                Color.clear
+            }
+        }
+        .register(slide: SlideInfo(id: id, notes: notes))
     }
 }
 
@@ -34,33 +45,65 @@ public struct Slide<Header: View, Content: View, Footer: View>: View {
 extension Slide {
 
     public init(
-        header: String,
-        footer: String,
+        header: LocalizedStringKey,
+        footer: LocalizedStringKey,
         @ViewBuilder content: () -> Content
-    ) where Header == Text, Footer == Text {
+    ) where Header == Text, Footer == Text, Notes == EmptyView {
         self.init {
             content()
         } header: {
             Text(header)
         } footer: {
             Text(footer)
+        } notes: {
+            EmptyView()
+        }
+    }
+
+    public init(
+        header: LocalizedStringKey,
+        footer: LocalizedStringKey,
+        notes: LocalizedStringKey,
+        @ViewBuilder content: () -> Content
+    ) where Header == Text, Footer == Text, Notes == Text {
+        self.init {
+            content()
+        } header: {
+            Text(header)
+        } footer: {
+            Text(footer)
+        } notes: {
+            Text(notes)
         }
     }
 
     public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder header: () -> Header
+    ) where Footer == EmptyView, Notes == EmptyView {
+        self.init(
+            content: content,
+            header: header,
+            footer: EmptyView.init,
+            notes: EmptyView.init)
+    }
+
+    public init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder notes: @escaping () -> Notes
     ) where Footer == EmptyView {
         self.init(
             content: content,
             header: header,
-            footer: EmptyView.init)
+            footer: EmptyView.init,
+            notes: notes)
     }
 
     public init(
-        header: String,
+        header: LocalizedStringKey,
         @ViewBuilder content: () -> Content
-    ) where Header == Text, Footer == EmptyView {
+    ) where Header == Text, Footer == EmptyView, Notes == EmptyView {
         self.init {
             content()
         } header: {
@@ -69,20 +112,46 @@ extension Slide {
     }
 
     public init(
+        header: LocalizedStringKey,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder notes: @escaping () -> Notes
+    ) where Header == Text, Footer == EmptyView {
+        self.init {
+            content()
+        } header: {
+            Text(header)
+        } notes: {
+            notes()
+        }
+    }
+
+    public init(
         @ViewBuilder content: () -> Content,
         @ViewBuilder footer: () -> Footer
+    ) where Header == EmptyView, Notes == EmptyView {
+        self.init(
+            content: content,
+            header: EmptyView.init,
+            footer: footer,
+            notes: EmptyView.init)
+    }
+
+    public init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer,
+        @ViewBuilder notes: @escaping () -> Notes
     ) where Header == EmptyView {
         self.init(
             content: content,
             header: EmptyView.init,
-            footer: footer)
+            footer: footer,
+            notes: notes)
     }
 
-
     public init(
-        footer: String,
+        footer: LocalizedStringKey,
         @ViewBuilder content: () -> Content
-    ) where Header == EmptyView, Footer == Text {
+    ) where Header == EmptyView, Footer == Text, Notes == EmptyView {
         self.init {
             content()
         } footer: {
@@ -91,12 +160,38 @@ extension Slide {
     }
 
     public init(
+        footer: LocalizedStringKey,
+        notes: LocalizedStringKey,
         @ViewBuilder content: () -> Content
+    ) where Header == EmptyView, Footer == Text, Notes == Text {
+        self.init {
+            content()
+        } footer: {
+            Text(footer)
+        } notes: {
+            Text(notes)
+        }
+    }
+
+    public init(
+        @ViewBuilder content: () -> Content
+    ) where Header == EmptyView, Footer == EmptyView, Notes == EmptyView {
+        self.init(
+            content: content,
+            header: EmptyView.init,
+            footer: EmptyView.init,
+            notes: EmptyView.init)
+    }
+
+    public init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder notes: @escaping () -> Notes
     ) where Header == EmptyView, Footer == EmptyView {
         self.init(
             content: content,
             header: EmptyView.init,
-            footer: EmptyView.init)
+            footer: EmptyView.init,
+            notes: notes)
     }
 }
 
@@ -141,6 +236,13 @@ public protocol SlideStyle: DynamicProperty {
 extension View {
 
     public func slideStyle(_ style: some SlideStyle) -> some View {
+        environment(\.slideStyle, style)
+    }
+}
+
+extension Scene {
+
+    public func slideStyle(_ style: some SlideStyle) -> some Scene {
         environment(\.slideStyle, style)
     }
 }
