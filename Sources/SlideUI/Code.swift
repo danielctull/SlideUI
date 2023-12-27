@@ -19,7 +19,7 @@ public struct Code: View {
     }
 }
 
-// MARK: - Default Style
+// MARK: - CodeStyle
 
 extension CodeStyle where Self == DefaultCodeStyle {
     public static var `default`: Self { Self() }
@@ -28,15 +28,9 @@ extension CodeStyle where Self == DefaultCodeStyle {
 public struct DefaultCodeStyle: CodeStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.color { _ in
-            .black
-        } font: { _ in
-            .system(size: 48, weight: .regular, design: .monospaced)
-        }
+        configuration.code
     }
 }
-
-// MARK: - Style
 
 extension View {
 
@@ -74,24 +68,23 @@ extension EnvironmentValues {
 public struct CodeStyleConfiguration {
 
     public struct Code: View {
-        fileprivate let base: AnyView
-        public var body: some View { base }
+        @Environment(\.tokenStyle) private var style
+        fileprivate let tokens: [Token]
+        public var body: some View {
+            tokens
+                .map { token in
+                    Text(token.value)
+                        .font(style.font(for: token))
+                        .foregroundColor(style.color(for: token))
+                }
+                .reduce(Text(""), +)
+        }
     }
 
-    fileprivate let tokens: [Token]
+    public let code: Code
 
-    public func color(
-        _ color: (Token) -> Color,
-        font: (Token) -> Font
-    ) -> Code {
-        let text = tokens.reduce(Text("")) { accumulated, token in
-            let text: Text = Text(token.value)
-                .font(font(token))
-                .foregroundColor(color(token))
-            return accumulated + text
-        }
-
-        return Code(base: AnyView(text))
+    fileprivate init(tokens: [Token]) {
+        code = Code(tokens: tokens)
     }
 }
 
@@ -109,5 +102,46 @@ private struct ResolvedCodeStyle<Style: CodeStyle>: View {
 
     var body: some View {
         style.makeBody(configuration: configuration)
+    }
+}
+
+// MARK: - TokenStyle
+
+extension TokenStyle where Self == DefaultTokenStyle {
+    public static var `default`: Self { Self() }
+}
+
+public struct DefaultTokenStyle: TokenStyle {
+
+    public func color(for token: Token) -> Color {
+        .black
+    }
+
+    public func font(for token: Token) -> Font {
+        .system(size: 48, weight: .regular, design: .monospaced)
+    }
+}
+
+extension View {
+
+    public func tokenStyle(_ style: some TokenStyle) -> some View {
+        environment(\.tokenStyle, style)
+    }
+}
+
+public protocol TokenStyle: DynamicProperty {
+    func color(for token: Token) -> Color
+    func font(for token: Token) -> Font
+}
+
+private struct TokenStyleKey: EnvironmentKey {
+    static var defaultValue: any TokenStyle = DefaultTokenStyle()
+}
+
+extension EnvironmentValues {
+
+    fileprivate var tokenStyle: any TokenStyle {
+        get { self[TokenStyleKey.self] }
+        set { self[TokenStyleKey.self] = newValue }
     }
 }
