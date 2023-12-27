@@ -14,7 +14,10 @@ public struct Code: View {
     }
 
     public var body: some View {
-        let configuration = CodeStyleConfiguration(tokens: tokens)
+        let configuration = CodeStyleConfiguration(
+            tokens: tokens,
+            color: style.color,
+            font: style.font)
         AnyView(style.resolve(configuration: configuration))
     }
 }
@@ -28,11 +31,7 @@ extension CodeStyle where Self == DefaultCodeStyle {
 public struct DefaultCodeStyle: CodeStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
-        configuration.color { _ in
-            .black
-        } font: { _ in
-            .system(size: 48, weight: .regular, design: .monospaced)
-        }
+        configuration.code
     }
 }
 
@@ -50,6 +49,10 @@ public protocol CodeStyle: DynamicProperty {
     typealias Configuration = CodeStyleConfiguration
     associatedtype Body : View
 
+    func color(for token: Token) -> Color
+
+    func font(for token: Token) -> Font
+
     /// Creates a view that represents the body of a code view.
     ///
     /// The system calls this method for each ``CodeView`` instance in a
@@ -57,6 +60,24 @@ public protocol CodeStyle: DynamicProperty {
     ///
     /// - Parameter configuration: The properties of the code view.
     @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
+}
+
+extension CodeStyle {
+
+    public func color(for token: Token) -> Color {
+        .black
+    }
+
+    public func font(for token: Token) -> Font {
+        .system(size: 48, weight: .regular, design: .monospaced)
+    }
+}
+
+extension CodeStyle where Body == CodeStyleConfiguration.Code {
+
+    func makeBody(configuration: Configuration) -> Body {
+        configuration.code
+    }
 }
 
 private struct CodeStyleKey: EnvironmentKey {
@@ -79,11 +100,10 @@ public struct CodeStyleConfiguration {
     }
 
     fileprivate let tokens: [Token]
+    fileprivate let color: (Token) -> Color
+    fileprivate let font: (Token) -> Font
 
-    public func color(
-        _ color: (Token) -> Color,
-        font: (Token) -> Font
-    ) -> Code {
+    public var code: Code {
         let text = tokens.reduce(Text("")) { accumulated, token in
             let text: Text = Text(token.value)
                 .font(font(token))
