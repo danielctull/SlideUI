@@ -17,8 +17,8 @@ let package = Package(
             targets: ["SlideUI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax", branch: "main"),
-        .package(url: "https://github.com/apple/swift-format", branch: "main"),
+        .package(url: "https://github.com/apple/swift-syntax", from: "509.0.0"),
+        .package(url: "https://github.com/apple/swift-format", from: "509.0.0"),
     ],
     targets: [
 
