@@ -68,16 +68,27 @@ extension EnvironmentValues {
 public struct CodeStyleConfiguration {
 
     public struct Code: View {
+
         @Environment(\.tokenStyle) private var style
-        fileprivate let tokens: [Token]
+        private let tokens: [Token]
+        private let string: String
+
+        fileprivate init(tokens: [Token]) {
+            self.tokens = tokens
+            self.string = tokens.map(\.value).reduce("", +)
+        }
+
         public var body: some View {
-            tokens
-                .map { token in
-                    Text(token.value)
-                        .font(style.font(for: token))
-                        .foregroundColor(style.color(for: token))
+            // Putting the coloring into overlay allows fast size calculations.
+            Text(string)
+                .hidden()
+                .overlay {
+                    tokens.map { token in
+                        Text(token.value)
+                            .foregroundColor(style.color(for: token))
+                    }
+                    .reduce(Text(""), +)
                 }
-                .reduce(Text(""), +)
         }
     }
 
@@ -116,10 +127,6 @@ public struct DefaultTokenStyle: TokenStyle {
     public func color(for token: Token) -> Color {
         .black
     }
-
-    public func font(for token: Token) -> Font {
-        .system(size: 48, weight: .regular, design: .monospaced)
-    }
 }
 
 extension View {
@@ -131,7 +138,6 @@ extension View {
 
 public protocol TokenStyle: DynamicProperty {
     func color(for token: Token) -> Color
-    func font(for token: Token) -> Font
 }
 
 private struct TokenStyleKey: EnvironmentKey {
