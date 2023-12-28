@@ -69,7 +69,7 @@ public struct CodeStyleConfiguration {
 
     public struct Code: View {
 
-        @Environment(\.tokenStyle) private var style
+        @Environment(\.codeHighlighting) private var highlighting
         private let tokens: [Token]
         private let string: String
 
@@ -85,7 +85,7 @@ public struct CodeStyleConfiguration {
                 .overlay {
                     tokens.map { token in
                         Text(token.value)
-                            .foregroundColor(style.color(for: token))
+                            .foregroundColor(highlighting.color(for: token))
                     }
                     .reduce(Text(""), +)
                 }
@@ -116,38 +116,31 @@ private struct ResolvedCodeStyle<Style: CodeStyle>: View {
     }
 }
 
-// MARK: - TokenStyle
-
-extension TokenStyle where Self == DefaultTokenStyle {
-    public static var `default`: Self { Self() }
-}
-
-public struct DefaultTokenStyle: TokenStyle {
-
-    public func color(for token: Token) -> Color {
-        .black
-    }
-}
+// MARK: - CodeHighlighting
 
 extension View {
 
-    public func tokenStyle(_ style: some TokenStyle) -> some View {
-        environment(\.tokenStyle, style)
+    public func codeHighlighting(_ style: some CodeHighlighting) -> some View {
+        environment(\.codeHighlighting, style)
     }
 }
 
-public protocol TokenStyle: DynamicProperty {
+public protocol CodeHighlighting: DynamicProperty {
     func color(for token: Token) -> Color
 }
 
-private struct TokenStyleKey: EnvironmentKey {
-    static var defaultValue: any TokenStyle = DefaultTokenStyle()
+private struct CodeHighlightingKey: EnvironmentKey {
+    static var defaultValue: any CodeHighlighting = DefaultCodeHighlighting()
+}
+
+private struct DefaultCodeHighlighting: CodeHighlighting {
+    func color(for token: Token) -> Color { .black }
 }
 
 extension EnvironmentValues {
 
-    fileprivate var tokenStyle: any TokenStyle {
-        get { self[TokenStyleKey.self] }
-        set { self[TokenStyleKey.self] = newValue }
+    fileprivate var codeHighlighting: any CodeHighlighting {
+        get { self[CodeHighlightingKey.self] }
+        set { self[CodeHighlightingKey.self] = newValue }
     }
 }
