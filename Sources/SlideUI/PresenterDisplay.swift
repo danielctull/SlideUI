@@ -9,11 +9,11 @@ struct PresenterDisplay: View {
     public var body: some View {
 
         let configuration = PresenterDisplayConfiguration(
-            previousSlide: EmptyView(),
-            currentSlide: EmptyView(),
-            nextSlide: EmptyView(),
-            previousButton: Button("Previous") { deck.previous() },
-            nextButton: Button("Next") { deck.next() },
+            previousSlide: deck.previous?.content().clipped(),
+            currentSlide: deck.current.content().clipped(),
+            nextSlide: deck.next?.content().clipped(),
+            previousButton: Button("Previous") { deck.goPrevious() },
+            nextButton: Button("Next") { deck.goNext() },
             notes: deck.current.notes)
 
         AnyView(style.resolve(configuration: configuration))

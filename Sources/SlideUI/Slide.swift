@@ -5,11 +5,11 @@ public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: Vie
 
     @Environment(\.slideStyle) private var style
     @Environment(\.currentSlide) private var currentSlide
-    private let id = SlideID()
+    let id = SlideID()
     private let content: Content
     private let header: Header
     private let footer: Footer
-    private let notes: () -> Notes
+    let notes: () -> Notes
 
     public init(
         @ViewBuilder content: () -> Content,
@@ -26,17 +26,22 @@ public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: Vie
     public var body: some View {
         Group {
             if id == currentSlide {
-                let configuration = SlideConfiguration(
-                    content: content,
-                    header: header,
-                    footer: footer)
-
-                AnyView(style.resolve(configuration: configuration))
+                resolvedContent
             } else {
                 Color.clear
             }
         }
-        .register(slide: SlideInfo(id: id, notes: notes))
+        .register(slide: self)
+    }
+
+    @ViewBuilder
+    var resolvedContent: some View {
+        let configuration = SlideConfiguration(
+            content: content,
+            header: header,
+            footer: footer)
+
+        AnyView(style.resolve(configuration: configuration))
     }
 }
 
