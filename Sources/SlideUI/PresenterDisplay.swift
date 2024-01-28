@@ -5,18 +5,34 @@ struct PresenterDisplay: View {
 
     @Environment(\.presenterDisplayStyle) private var style
     @Binding var deck: Deck
+    @Binding var size: CGSize
 
     public var body: some View {
 
         let configuration = PresenterDisplayConfiguration(
-            previousSlide: deck.previous?.content().clipped(),
-            currentSlide: deck.current.content().clipped(),
-            nextSlide: deck.next?.content().clipped(),
+            previousSlide: SlidePreview(size: size, slide: deck.previous),
+            currentSlide: SlidePreview(size: size, slide: deck.current),
+            nextSlide: SlidePreview(size: size, slide: deck.next),
             previousButton: Button("Previous") { deck.goPrevious() },
             nextButton: Button("Next") { deck.goNext() },
             notes: deck.current.notes)
 
         AnyView(style.resolve(configuration: configuration))
+    }
+}
+
+// MARK: - SlidePreview
+
+struct SlidePreview: View {
+
+    let size: CGSize
+    let slide: SlideInfo?
+
+    var body: some View {
+
+        Color.clear
+            .frame(width: size.width, height: size.height)
+            .overlay { slide?.content().clipped() }
     }
 }
 
