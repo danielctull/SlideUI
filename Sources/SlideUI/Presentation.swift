@@ -7,7 +7,7 @@ public struct Presentation<Slides: View>: Scene {
 
     @Environment(\.openWindow) private var openWindow
     @State private var deck = Deck()
-    @State private var presentationSize = CGSize.zero
+    @State private var size = PresentationSize()
     let slides: Slides
 
     public init(@ViewBuilder slides: () -> Slides) {
@@ -23,11 +23,11 @@ public struct Presentation<Slides: View>: Scene {
             .deck { deck = $0 }
             .environment(\.currentSlide, deck.current.id)
             .onAppear { openWindow(id: presenterDisplayID) }
-            .bindSize(to: $presentationSize)
+            .onPresentationSizeChange { size = $0 }
         }
 
         Window("Presenter Display", id: presenterDisplayID) {
-            PresenterDisplay(deck: $deck, size: $presentationSize)
+            PresenterDisplay(deck: $deck, size: $size)
         }
     }
 }

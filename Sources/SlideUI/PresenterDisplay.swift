@@ -5,7 +5,7 @@ struct PresenterDisplay: View {
 
     @Environment(\.presenterDisplayStyle) private var style
     @Binding var deck: Deck
-    @Binding var size: CGSize
+    @Binding var size: PresentationSize
 
     public var body: some View {
 
@@ -25,14 +25,13 @@ struct PresenterDisplay: View {
 
 struct SlidePreview: View {
 
-    let size: CGSize
+    let size: PresentationSize
     let slide: SlideInfo?
 
     var body: some View {
-
-        Color.clear
-            .frame(width: size.width, height: size.height)
-            .overlay { slide?.content().clipped() }
+        size.render {
+            slide?.content()
+        }
     }
 }
 
@@ -49,8 +48,11 @@ public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
         VStack {
             HStack {
                 configuration.preview.previous
+                    .frame(width: 200, height: 150)
                 configuration.preview.current
+                    .frame(width: 400, height: 300)
                 configuration.preview.next
+                    .frame(width: 200, height: 150)
             }
 
             configuration.notes

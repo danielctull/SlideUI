@@ -1,30 +1,47 @@
 
 import SwiftUI
 
-private struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        value = nextValue()
-    }
+struct PresentationSize: Equatable {
+    fileprivate let size: CGSize
 }
 
-extension View {
-
-    private func size(_ size: CGSize) -> some View {
-        preference(key: SizePreferenceKey.self, value: size)
-    }
-
-    private func onSizeChange(perform action: @escaping (CGSize) -> Void) -> some View {
-        onPreferenceChange(SizePreferenceKey.self, perform: action)
-    }
+extension PresentationSize {
+    init() { self.init(size: .zero) }
 }
 
-extension View {
+extension PresentationSize {
 
-    func bindSize(to binding: Binding<CGSize>) -> some View {
-        GeometryReader { geometry in
-            self.size(geometry.size)
+    fileprivate struct Key: PreferenceKey {
+        static var defaultValue = PresentationSize()
+        static func reduce(value: inout PresentationSize, nextValue: () -> PresentationSize) {
+            value = nextValue()
         }
-        .onSizeChange { binding.wrappedValue = $0 }
+    }
+}
+
+extension View {
+
+    func onPresentationSizeChange(perform action: @escaping (PresentationSize) -> Void) -> some View {
+        GeometryReader { geometry in
+            preference(key: PresentationSize.Key.self, value: PresentationSize(size: geometry.size))
+        }
+        .onPreferenceChange(PresentationSize.Key.self, perform: action)
+    }
+}
+
+extension PresentationSize {
+
+    func render(@ViewBuilder _ view: @escaping () -> some View) -> some View {
+
+        GeometryReader { geometry in
+            let width = geometry.size.width / size.width
+            let height = geometry.size.height / size.height
+            let scale = min(width, height)
+
+            view()
+                .frame(width: size.width, height: size.height)
+                .scaleEffect(scale)
+                .frame(width: geometry.size.width, height: geometry.size.height)
+        }
     }
 }
