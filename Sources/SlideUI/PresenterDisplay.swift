@@ -5,18 +5,33 @@ struct PresenterDisplay: View {
 
     @Environment(\.presenterDisplayStyle) private var style
     @Binding var deck: Deck
+    @Binding var size: PresentationSize
 
     public var body: some View {
 
         let configuration = PresenterDisplayConfiguration(
-            previousSlide: EmptyView(),
-            currentSlide: EmptyView(),
-            nextSlide: EmptyView(),
-            previousButton: Button("Previous") { deck.previous() },
-            nextButton: Button("Next") { deck.next() },
+            previousSlide: SlidePreview(size: size, slide: deck.previous),
+            currentSlide: SlidePreview(size: size, slide: deck.current),
+            nextSlide: SlidePreview(size: size, slide: deck.next),
+            previousButton: Button("Previous") { deck.goPrevious() },
+            nextButton: Button("Next") { deck.goNext() },
             notes: deck.current.notes)
 
         AnyView(style.resolve(configuration: configuration))
+    }
+}
+
+// MARK: - SlidePreview
+
+struct SlidePreview: View {
+
+    let size: PresentationSize
+    let slide: SlideInfo?
+
+    var body: some View {
+        size.render {
+            slide?.content()
+        }
     }
 }
 
@@ -33,8 +48,11 @@ public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
         VStack {
             HStack {
                 configuration.preview.previous
+                    .frame(width: 200, height: 150)
                 configuration.preview.current
+                    .frame(width: 400, height: 300)
                 configuration.preview.next
+                    .frame(width: 200, height: 150)
             }
 
             configuration.notes

@@ -3,16 +3,18 @@ import SwiftUI
 
 struct SlideInfo {
     let id: SlideID
+    let content: () -> AnyView
     let notes: () -> AnyView
 
-    init(id: SlideID, notes: @escaping () -> some View) {
+    init(id: SlideID, content: @escaping () -> some View, notes: @escaping () -> some View) {
         self.id = id
+        self.content = { AnyView(content()) }
         self.notes = { AnyView(notes()) }
     }
 }
 
 extension SlideInfo {
-    static let none = SlideInfo(id: .none, notes: EmptyView.init)
+    static let none = SlideInfo(id: .none, content: EmptyView.init, notes: EmptyView.init)
 }
 
 extension SlideInfo: Equatable {
