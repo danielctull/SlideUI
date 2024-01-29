@@ -15,6 +15,10 @@ let package = Package(
         .library(
             name: "SlideUI",
             targets: ["SlideUI"]),
+
+        .library(
+            name: "XcodeCodeHighlighting",
+            targets: ["XcodeCodeHighlighting"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax", from: "509.0.0"),
@@ -44,6 +48,12 @@ let package = Package(
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ]),
+
+        .target(
+            name: "XcodeCodeHighlighting",
+            dependencies: [
+                "SlideUI",
             ]),
     ]
 )

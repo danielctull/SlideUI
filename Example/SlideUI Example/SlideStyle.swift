@@ -1,6 +1,7 @@
 
 import SlideUI
 import SwiftUI
+import XcodeCodeHighlighting
 
 extension SlideStyle where Self == CustomSlideStyle {
     static var custom: CustomSlideStyle { CustomSlideStyle() }
@@ -30,7 +31,7 @@ struct CustomSlideStyle: SlideStyle {
         .foregroundColor(.black)
         .background(.white)
         .codePreviewStyle(.vertical)
-        .codeHighlighting(.xcode.classic)
+        .codeHighlighting(.xcodeClassicLight)
     }
 }
 
