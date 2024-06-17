@@ -33,6 +33,9 @@ let package = Package(
                 .product(name: "SwiftIDEUtils", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftParser", package: "swift-syntax"),
+            ],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency"),
             ]),
 
 
@@ -48,6 +51,9 @@ let package = Package(
             name: "SlideUITests",
             dependencies: [
                 "SlideUI",
+            ],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency"),
             ]),
 
         .macro(
@@ -57,12 +63,18 @@ let package = Package(
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency"),
             ]),
 
         .target(
             name: "XcodeCodeHighlighting",
             dependencies: [
                 "SlideUI",
+            ],
+            swiftSettings: [
+              .enableExperimentalFeature("StrictConcurrency"),
             ]),
     ]
 )
