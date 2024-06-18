@@ -5,16 +5,16 @@ import SwiftUI
 public macro Code<Preview: View>(@ViewBuilder _ preview: () -> Preview) -> Code<Preview> = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
 
 @freestanding(expression)
-public macro Code(_ code: () -> Any) -> LegacyCode = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro Code(_ code: () -> Any) -> Code<EmptyView> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
 
 public struct Code<Preview: View>: View {
 
     @Environment(\.codeStyle) private var style
-    private let code: LegacyCode
+    private let code: String
     private let preview: Preview
 
     public init(
-        code: () -> LegacyCode,
+        code: () -> String,
         @ViewBuilder preview: () -> Preview
     ) {
         self.code = code()
@@ -23,7 +23,7 @@ public struct Code<Preview: View>: View {
 
     public var body: some View {
         let configuration = CodeStyleConfiguration(
-            code: code,
+            code: TokensView(code: code),
             preview: preview)
         AnyView(style.resolve(configuration: configuration))
     }
@@ -31,10 +31,35 @@ public struct Code<Preview: View>: View {
 
 extension Code where Preview == EmptyView {
 
-    public init(
-        code: () -> LegacyCode
-    ) {
+    public init(code: () -> String) {
         self.init(code: code, preview: EmptyView.init)
+    }
+}
+
+// MARK: - Tokens View
+
+private struct TokensView: View {
+
+    @Environment(\.codeHighlighting) private var highlighting
+    private let code: String
+    private let tokens: [Token]
+
+    init(code: String) {
+        self.code = code
+        self.tokens = Array(code: code)
+    }
+
+    public var body: some View {
+        // Putting the coloring into overlay allows fast size calculations.
+        Text(code)
+            .hidden()
+            .overlay {
+                tokens.map { token in
+                    Text(token.value)
+                        .foregroundColor(highlighting.color(for: token))
+                }
+                .reduce(Text(""), +)
+            }
     }
 }
 

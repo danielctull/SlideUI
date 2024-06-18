@@ -23,7 +23,7 @@ public struct CodeMacro: ExpressionMacro {
         try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
 
         return """
-            LegacyCode { \(literal: output) }
+            Code { \(literal: output) }
             """
     }
 }
@@ -39,11 +39,14 @@ public struct CodePreviewMacro: ExpressionMacro {
             throw Failure(description: "Does not have a trailing closure.")
         }
 
+        var output = ""
+        let formatter = SwiftFormatter(configuration: .init())
+        let file = SourceFileSyntax(statements: closure.statements)
+        try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
+
         return """
             Code {
-                #Code {
-                    \(closure.statements)
-                }
+                \(literal: output)
             } preview: {
                 \(closure.statements)
             }

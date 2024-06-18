@@ -8,7 +8,7 @@ struct PresentationApp: App {
       Presentation {
 
           Slide {
-              LegacyCode {
+              Code {
                   """
                   // This is a comment
                   private final class Tokenizer2: SyntaxRewriter {
