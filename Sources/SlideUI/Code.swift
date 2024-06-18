@@ -116,6 +116,14 @@ extension View {
     }
 }
 
+
+extension Scene {
+
+    public func codeStyle(_ style: some CodeStyle) -> some Scene {
+        environment(\.codeStyle, style)
+    }
+}
+
 public protocol CodeStyle: DynamicProperty {
 
     typealias Configuration = CodeStyleConfiguration
