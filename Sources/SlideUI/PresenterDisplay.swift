@@ -4,8 +4,8 @@ import SwiftUI
 struct PresenterDisplay: View {
 
     @Environment(\.presenterDisplayStyle) private var style
+    @Environment(\.presentationSize) private var size
     @Binding var deck: Deck
-    @Binding var size: PresentationSize
 
     public var body: some View {
 

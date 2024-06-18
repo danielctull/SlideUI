@@ -15,6 +15,21 @@ extension PresentationSize {
     static let zero = Self(width: 0, height: 0)
 }
 
+// MARK: - EnvironmentKey
+
+extension PresentationSize {
+    fileprivate struct EnvironmentKey: SwiftUI.EnvironmentKey {
+        static let defaultValue = PresentationSize.zero
+    }
+}
+
+extension EnvironmentValues {
+    public internal(set) var presentationSize: PresentationSize {
+        get { self[PresentationSize.EnvironmentKey.self] }
+        set { self[PresentationSize.EnvironmentKey.self] = newValue }
+    }
+}
+
 // MARK: - PreferenceKey
 
 extension PresentationSize {

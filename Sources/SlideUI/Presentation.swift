@@ -22,12 +22,14 @@ public struct Presentation<Slides: View>: Scene {
             }
             .deck { deck = $0 }
             .environment(\.currentSlide, deck.current.id)
+            .environment(\.presentationSize, size)
             .onAppear { openWindow(id: presenterDisplayID) }
             .onPresentationSizeChange { size = $0 }
         }
 
         Window("Presenter Display", id: presenterDisplayID) {
-            PresenterDisplay(deck: $deck, size: $size)
+            PresenterDisplay(deck: $deck)
+                .environment(\.presentationSize, size)
         }
     }
 }
