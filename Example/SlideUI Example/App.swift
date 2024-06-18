@@ -29,7 +29,7 @@ struct PresentationApp: App {
 
               Text("This is how to make a red square.")
 
-              #CodePreview {
+              #Code {
                   Color.red.frame(width: 100, height: 100)
               }
           }

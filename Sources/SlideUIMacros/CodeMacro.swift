@@ -2,7 +2,7 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct CodePreviewMacro: ExpressionMacro {
+public struct CodeMacro: ExpressionMacro {
 
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -14,7 +14,7 @@ public struct CodePreviewMacro: ExpressionMacro {
         }
 
         return """
-            CodePreview {
+            Code {
                 \(closure.statements)
             } code: {
                 #LegacyCode {

@@ -2,11 +2,11 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro CodePreview<Content: View>(@ViewBuilder _ content: () -> Content) -> CodePreview<Content> = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
+public macro Code<Content: View>(@ViewBuilder _ content: () -> Content) -> Code<Content> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
 
-public struct CodePreview<Content: View>: View {
+public struct Code<Content: View>: View {
 
-    @Environment(\.codePreviewStyle) private var style
+    @Environment(\.codeStyle) private var style
     private let code: LegacyCode
     private let content: Content
 
@@ -16,7 +16,7 @@ public struct CodePreview<Content: View>: View {
     }
 
     public var body: some View {
-        let configuration = CodePreviewStyleConfiguration(
+        let configuration = CodeStyleConfiguration(
             code: code,
             content: content)
         AnyView(style.resolve(configuration: configuration))
@@ -25,11 +25,11 @@ public struct CodePreview<Content: View>: View {
 
 // MARK: - Horizontal Style
 
-extension CodePreviewStyle where Self == HorizontalCodePreviewStyle {
+extension CodeStyle where Self == HorizontalCodeStyle {
     public static var horizontal: Self { Self() }
 }
 
-public struct HorizontalCodePreviewStyle: CodePreviewStyle {
+public struct HorizontalCodeStyle: CodeStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -41,11 +41,11 @@ public struct HorizontalCodePreviewStyle: CodePreviewStyle {
 
 // MARK: - Vertical Style
 
-extension CodePreviewStyle where Self == VerticalCodePreviewStyle {
+extension CodeStyle where Self == VerticalCodeStyle {
     public static var vertical: Self { Self() }
 }
 
-public struct VerticalCodePreviewStyle: CodePreviewStyle {
+public struct VerticalCodeStyle: CodeStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         VStack {
@@ -59,14 +59,14 @@ public struct VerticalCodePreviewStyle: CodePreviewStyle {
 
 extension View {
 
-    public func codePreviewStyle(_ style: some CodePreviewStyle) -> some View {
-        environment(\.codePreviewStyle, style)
+    public func codeStyle(_ style: some CodeStyle) -> some View {
+        environment(\.codeStyle, style)
     }
 }
 
-public protocol CodePreviewStyle: DynamicProperty {
+public protocol CodeStyle: DynamicProperty {
 
-    typealias Configuration = CodePreviewStyleConfiguration
+    typealias Configuration = CodeStyleConfiguration
     associatedtype Body : View
 
     /// Creates a view that represents the body of a source view.
@@ -78,19 +78,19 @@ public protocol CodePreviewStyle: DynamicProperty {
     @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
-private struct CodePreviewStyleKey: EnvironmentKey {
-    static var defaultValue: any CodePreviewStyle = .horizontal
+private struct CodeStyleKey: EnvironmentKey {
+    static var defaultValue: any CodeStyle = .horizontal
 }
 
 extension EnvironmentValues {
 
-    fileprivate var codePreviewStyle: any CodePreviewStyle {
-        get { self[CodePreviewStyleKey.self] }
-        set { self[CodePreviewStyleKey.self] = newValue }
+    fileprivate var codeStyle: any CodeStyle {
+        get { self[CodeStyleKey.self] }
+        set { self[CodeStyleKey.self] = newValue }
     }
 }
 
-public struct CodePreviewStyleConfiguration {
+public struct CodeStyleConfiguration {
 
     public struct Code: View {
         fileprivate let base: AnyView
@@ -111,14 +111,14 @@ public struct CodePreviewStyleConfiguration {
     }
 }
 
-extension CodePreviewStyle {
+extension CodeStyle {
 
     fileprivate func resolve(configuration: Configuration) -> some View {
-        ResolvedCodePreviewStyle(style: self, configuration: configuration)
+        ResolvedCodeStyle(style: self, configuration: configuration)
     }
 }
 
-private struct ResolvedCodePreviewStyle<Style: CodePreviewStyle>: View {
+private struct ResolvedCodeStyle<Style: CodeStyle>: View {
 
     let style: Style
     let configuration: Style.Configuration

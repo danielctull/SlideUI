@@ -6,7 +6,7 @@ import SwiftSyntaxMacros
 struct SlideUIPlugin: CompilerPlugin {
 
     let providingMacros: [Macro.Type] = [
-        CodePreviewMacro.self,
+        CodeMacro.self,
         LegacyCodeMacro.self,
     ]
 }
