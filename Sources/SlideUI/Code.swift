@@ -2,7 +2,7 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Code<Preview: View>(@ViewBuilder _ preview: () -> Preview) -> Code<Preview> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro Code<Preview: View>(@ViewBuilder _ preview: () -> Preview) -> Code<Preview> = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
 
 public struct Code<Preview: View>: View {
 

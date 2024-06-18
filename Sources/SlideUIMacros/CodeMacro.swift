@@ -28,7 +28,7 @@ public struct LegacyCodeMacro: ExpressionMacro {
     }
 }
 
-public struct CodeMacro: ExpressionMacro {
+public struct CodePreviewMacro: ExpressionMacro {
 
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
