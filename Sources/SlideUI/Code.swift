@@ -26,6 +26,15 @@ public struct Code<Preview: View>: View {
     }
 }
 
+extension Code where Preview == EmptyView {
+
+    public init(
+        code: () -> LegacyCode
+    ) {
+        self.init(code: code, preview: EmptyView.init)
+    }
+}
+
 // MARK: - Horizontal Style
 
 extension CodeStyle where Self == HorizontalCodeStyle {
