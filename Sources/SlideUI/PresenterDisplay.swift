@@ -4,15 +4,14 @@ import SwiftUI
 struct PresenterDisplay: View {
 
     @Environment(\.presenterDisplayStyle) private var style
-    @Environment(\.presentationSize) private var size
     @Binding var deck: Deck
 
     public var body: some View {
 
         let configuration = PresenterDisplayConfiguration(
-            previousSlide: SlidePreview(size: size, slide: deck.previous),
-            currentSlide: SlidePreview(size: size, slide: deck.current),
-            nextSlide: SlidePreview(size: size, slide: deck.next),
+            previousSlide: SlidePreview(slide: deck.previous),
+            currentSlide: SlidePreview(slide: deck.current),
+            nextSlide: SlidePreview(slide: deck.next),
             previousButton: Button("Previous") { deck.goPrevious() },
             nextButton: Button("Next") { deck.goNext() },
             notes: deck.current.notes)
@@ -25,7 +24,7 @@ struct PresenterDisplay: View {
 
 struct SlidePreview: View {
 
-    let size: PresentationSize
+    @Environment(\.presentationSize) private var size
     let slide: SlideInfo?
 
     var body: some View {
