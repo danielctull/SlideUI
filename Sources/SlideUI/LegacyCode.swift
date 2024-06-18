@@ -2,11 +2,11 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Code(_ code: () -> Any) -> Code = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro LegacyCode(_ code: () -> Any) -> LegacyCode = #externalMacro(module: "SlideUIMacros", type: "LegacyCodeMacro")
 
-public struct Code: View {
+public struct LegacyCode: View {
 
-    @Environment(\.codeStyle) private var style
+    @Environment(\.legacyCodeStyle) private var style
     private let tokens: [Token]
 
     public init(_ code: () -> String) {
@@ -14,18 +14,18 @@ public struct Code: View {
     }
 
     public var body: some View {
-        let configuration = CodeStyleConfiguration(tokens: tokens)
+        let configuration = LegacyCodeStyleConfiguration(tokens: tokens)
         AnyView(style.resolve(configuration: configuration))
     }
 }
 
-// MARK: - CodeStyle
+// MARK: - LegacyCodeStyle
 
-extension CodeStyle where Self == DefaultCodeStyle {
+extension LegacyCodeStyle where Self == DefaultLegacyCodeStyle {
     public static var `default`: Self { Self() }
 }
 
-public struct DefaultCodeStyle: CodeStyle {
+public struct DefaultLegacyCodeStyle: LegacyCodeStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.code
@@ -34,14 +34,14 @@ public struct DefaultCodeStyle: CodeStyle {
 
 extension View {
 
-    public func codeStyle(_ style: some CodeStyle) -> some View {
-        environment(\.codeStyle, style)
+    public func legacyCodeStyle(_ style: some LegacyCodeStyle) -> some View {
+        environment(\.legacyCodeStyle, style)
     }
 }
 
-public protocol CodeStyle: DynamicProperty {
+public protocol LegacyCodeStyle: DynamicProperty {
 
-    typealias Configuration = CodeStyleConfiguration
+    typealias Configuration = LegacyCodeStyleConfiguration
     associatedtype Body : View
 
     /// Creates a view that represents the body of a code view.
@@ -53,19 +53,19 @@ public protocol CodeStyle: DynamicProperty {
     @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
-private struct CodeStyleKey: EnvironmentKey {
-    static var defaultValue: any CodeStyle = DefaultCodeStyle()
+private struct LegacyCodeStyleKey: EnvironmentKey {
+    static var defaultValue: any LegacyCodeStyle = DefaultLegacyCodeStyle()
 }
 
 extension EnvironmentValues {
 
-    fileprivate var codeStyle: any CodeStyle {
-        get { self[CodeStyleKey.self] }
-        set { self[CodeStyleKey.self] = newValue }
+    fileprivate var legacyCodeStyle: any LegacyCodeStyle {
+        get { self[LegacyCodeStyleKey.self] }
+        set { self[LegacyCodeStyleKey.self] = newValue }
     }
 }
 
-public struct CodeStyleConfiguration {
+public struct LegacyCodeStyleConfiguration {
 
     public struct Code: View {
 
@@ -99,14 +99,14 @@ public struct CodeStyleConfiguration {
     }
 }
 
-extension CodeStyle {
+extension LegacyCodeStyle {
 
     fileprivate func resolve(configuration: Configuration) -> some View {
-        ResolvedCodeStyle(style: self, configuration: configuration)
+        ResolvedLegacyCodeStyle(style: self, configuration: configuration)
     }
 }
 
-private struct ResolvedCodeStyle<Style: CodeStyle>: View {
+private struct ResolvedLegacyCodeStyle<Style: LegacyCodeStyle>: View {
 
     let style: Style
     let configuration: Style.Configuration

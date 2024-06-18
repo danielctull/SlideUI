@@ -7,7 +7,7 @@ struct Failure: Error {
     let description: String
 }
 
-public struct CodeMacro: ExpressionMacro {
+public struct LegacyCodeMacro: ExpressionMacro {
 
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -24,7 +24,7 @@ public struct CodeMacro: ExpressionMacro {
         try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
 
         return """
-            Code { \(literal: output) }
+            LegacyCode { \(literal: output) }
             """
     }
 }

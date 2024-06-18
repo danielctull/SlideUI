@@ -7,10 +7,10 @@ public macro CodePreview<Content: View>(@ViewBuilder _ content: () -> Content) -
 public struct CodePreview<Content: View>: View {
 
     @Environment(\.codePreviewStyle) private var style
-    private let code: Code
+    private let code: LegacyCode
     private let content: Content
 
-    public init(@ViewBuilder content: () -> Content, code: () -> Code) {
+    public init(@ViewBuilder content: () -> Content, code: () -> LegacyCode) {
         self.code = code()
         self.content = content()
     }
