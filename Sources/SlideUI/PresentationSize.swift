@@ -15,9 +15,11 @@ extension PresentationSize {
     static let zero = Self(width: 0, height: 0)
 }
 
+// MARK: - PreferenceKey
+
 extension PresentationSize {
 
-    fileprivate struct Key: PreferenceKey {
+    fileprivate struct PreferenceKey: SwiftUI.PreferenceKey {
         static let defaultValue = PresentationSize.zero
         static func reduce(value: inout PresentationSize, nextValue: () -> PresentationSize) {
             value = nextValue()
@@ -29,9 +31,9 @@ extension View {
 
     func onPresentationSizeChange(perform action: @escaping (PresentationSize) -> Void) -> some View {
         GeometryReader { geometry in
-            preference(key: PresentationSize.Key.self, value: PresentationSize(geometry.size))
+            preference(key: PresentationSize.PreferenceKey.self, value: PresentationSize(geometry.size))
         }
-        .onPreferenceChange(PresentationSize.Key.self, perform: action)
+        .onPreferenceChange(PresentationSize.PreferenceKey.self, perform: action)
     }
 }
 
