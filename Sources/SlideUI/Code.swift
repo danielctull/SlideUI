@@ -129,12 +129,12 @@ public protocol CodeStyle: DynamicProperty {
     typealias Configuration = CodeStyleConfiguration
     associatedtype Body : View
 
-    /// Creates a view that represents the body of a source view.
+    /// Creates a view that represents the body of a code view.
     ///
     /// The system calls this method for each ``CodeView`` instance in a
-    /// view hierarchy where this style is the current source style.
+    /// view hierarchy where this style is the current code style.
     ///
-    /// - Parameter configuration: The properties of the source view.
+    /// - Parameter configuration: The properties of the code view.
     @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
