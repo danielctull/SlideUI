@@ -38,18 +38,3 @@ struct CustomSlideStyle: SlideStyle {
         .codeHighlighting(.xcodeClassicLight)
     }
 }
-
-extension Font {
-
-    static func test(_ weight: Font.Weight, italic: Bool) -> Self {
-        if italic {
-            .system(size: .font, weight: weight, design: .monospaced).italic()
-        } else {
-            .system(size: .font, weight: weight, design: .monospaced)
-        }
-    }
-}
-
-extension CGFloat {
-    fileprivate static let font = Self(40)
-}
