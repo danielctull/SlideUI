@@ -29,9 +29,19 @@ struct PresentationApp: App {
 
               Text("This is how to make a red square.")
 
-              #CodePreview {
+              #Code {
                   Color.red.frame(width: 100, height: 100)
               }
+          }
+
+          Slide(header: "No Preview!") {
+
+              Text("This is how to make a red square.")
+
+              #Code {
+                  Color.red.frame(width: 100, height: 100)
+              }
+              .codeStyle(.previewHidden)
           }
 
           Slide(header: "Showing some code") {

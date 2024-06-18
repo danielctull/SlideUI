@@ -2,39 +2,124 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Code(_ code: () -> Any) -> Code = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro Code<Preview: View>(@ViewBuilder preview: () -> Preview) -> Code<Preview> = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
 
-public struct Code: View {
+@freestanding(expression)
+public macro Code(code: () -> Any) -> Code<EmptyView> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+
+public struct Code<Preview: View>: View {
 
     @Environment(\.codeStyle) private var style
-    private let tokens: [Token]
+    private let code: String
+    private let preview: Preview
 
-    public init(_ code: () -> String) {
-        tokens = Array(code: code())
+    public init(
+        code: () -> String,
+        @ViewBuilder preview: () -> Preview
+    ) {
+        self.code = code()
+        self.preview = preview()
     }
 
     public var body: some View {
-        let configuration = CodeStyleConfiguration(tokens: tokens)
+        let configuration = CodeStyleConfiguration(
+            code: TokensView(code: code),
+            preview: preview)
         AnyView(style.resolve(configuration: configuration))
     }
 }
 
-// MARK: - CodeStyle
+extension Code where Preview == EmptyView {
 
-extension CodeStyle where Self == DefaultCodeStyle {
-    public static var `default`: Self { Self() }
+    public init(code: () -> String) {
+        self.init(code: code, preview: EmptyView.init)
+    }
 }
 
-public struct DefaultCodeStyle: CodeStyle {
+// MARK: - Tokens View
 
+private struct TokensView: View {
+
+    @Environment(\.codeHighlighting) private var highlighting
+    private let code: String
+    private let tokens: [Token]
+
+    init(code: String) {
+        self.code = code
+        self.tokens = Array(code: code)
+    }
+
+    public var body: some View {
+        // Putting the coloring into overlay allows fast size calculations.
+        Text(code)
+            .hidden()
+            .overlay {
+                tokens.map { token in
+                    Text(token.value)
+                        .foregroundColor(highlighting.color(for: token))
+                }
+                .reduce(Text(""), +)
+            }
+    }
+}
+
+// MARK: - Preview Hidden Style
+
+extension CodeStyle where Self == PreviewHiddenCodeStyle {
+    public static var previewHidden: Self { Self() }
+}
+
+public struct PreviewHiddenCodeStyle: CodeStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.code
     }
 }
 
+// MARK: - Horizontal Style
+
+extension CodeStyle where Self == HorizontalCodeStyle {
+    public static var horizontal: Self { Self() }
+}
+
+public struct HorizontalCodeStyle: CodeStyle {
+
+    public func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.code
+            configuration.preview
+        }
+    }
+}
+
+// MARK: - Vertical Style
+
+extension CodeStyle where Self == VerticalCodeStyle {
+    public static var vertical: Self { Self() }
+}
+
+public struct VerticalCodeStyle: CodeStyle {
+
+    public func makeBody(configuration: Configuration) -> some View {
+        VStack {
+            configuration.code
+            configuration.preview
+        }
+    }
+}
+
+// MARK: - Style
+
 extension View {
 
     public func codeStyle(_ style: some CodeStyle) -> some View {
+        environment(\.codeStyle, style)
+    }
+}
+
+
+extension Scene {
+
+    public func codeStyle(_ style: some CodeStyle) -> some Scene {
         environment(\.codeStyle, style)
     }
 }
@@ -54,7 +139,7 @@ public protocol CodeStyle: DynamicProperty {
 }
 
 private struct CodeStyleKey: EnvironmentKey {
-    static var defaultValue: any CodeStyle = DefaultCodeStyle()
+    static var defaultValue: any CodeStyle = .horizontal
 }
 
 extension EnvironmentValues {
@@ -68,34 +153,21 @@ extension EnvironmentValues {
 public struct CodeStyleConfiguration {
 
     public struct Code: View {
+        fileprivate let base: AnyView
+        public var body: some View { base }
+    }
 
-        @Environment(\.codeHighlighting) private var highlighting
-        private let tokens: [Token]
-        private let string: String
-
-        fileprivate init(tokens: [Token]) {
-            self.tokens = tokens
-            self.string = tokens.map(\.value).reduce("", +)
-        }
-
-        public var body: some View {
-            // Putting the coloring into overlay allows fast size calculations.
-            Text(string)
-                .hidden()
-                .overlay {
-                    tokens.map { token in
-                        Text(token.value)
-                            .foregroundColor(highlighting.color(for: token))
-                    }
-                    .reduce(Text(""), +)
-                }
-        }
+    public struct Preview: View {
+        fileprivate let base: AnyView
+        public var body: some View { base }
     }
 
     public let code: Code
+    public let preview: Preview
 
-    fileprivate init(tokens: [Token]) {
-        code = Code(tokens: tokens)
+    fileprivate init(code: some View, preview: some View) {
+        self.code = Code(base: AnyView(code))
+        self.preview = Preview(base: AnyView(preview))
     }
 }
 
@@ -113,41 +185,5 @@ private struct ResolvedCodeStyle<Style: CodeStyle>: View {
 
     var body: some View {
         style.makeBody(configuration: configuration)
-    }
-}
-
-// MARK: - CodeHighlighting
-
-extension View {
-
-    public func codeHighlighting(_ style: some CodeHighlighting) -> some View {
-        environment(\.codeHighlighting, style)
-    }
-}
-
-extension Scene {
-
-    public func codeHighlighting(_ style: some CodeHighlighting) -> some Scene {
-        environment(\.codeHighlighting, style)
-    }
-}
-
-public protocol CodeHighlighting: DynamicProperty {
-    func color(for token: Token) -> Color
-}
-
-private struct CodeHighlightingKey: EnvironmentKey {
-    static var defaultValue: any CodeHighlighting = DefaultCodeHighlighting()
-}
-
-private struct DefaultCodeHighlighting: CodeHighlighting {
-    func color(for token: Token) -> Color { .black }
-}
-
-extension EnvironmentValues {
-
-    fileprivate var codeHighlighting: any CodeHighlighting {
-        get { self[CodeHighlightingKey.self] }
-        set { self[CodeHighlightingKey.self] = newValue }
     }
 }

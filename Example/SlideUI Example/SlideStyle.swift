@@ -30,7 +30,7 @@ struct CustomSlideStyle: SlideStyle {
         .padding(30)
         .foregroundColor(.black)
         .background(.white)
-        .codePreviewStyle(.vertical)
+        .codeStyle(.vertical)
         .codeHighlighting(.xcodeClassicLight)
     }
 }
