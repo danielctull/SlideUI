@@ -2,23 +2,23 @@
 import SwiftUI
 
 @freestanding(expression)
-public macro Code<Content: View>(@ViewBuilder _ content: () -> Content) -> Code<Content> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+public macro Code<Preview: View>(@ViewBuilder _ preview: () -> Preview) -> Code<Preview> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
 
-public struct Code<Content: View>: View {
+public struct Code<Preview: View>: View {
 
     @Environment(\.codeStyle) private var style
     private let code: LegacyCode
-    private let content: Content
+    private let preview: Preview
 
-    public init(@ViewBuilder content: () -> Content, code: () -> LegacyCode) {
+    public init(@ViewBuilder preview: () -> Preview, code: () -> LegacyCode) {
         self.code = code()
-        self.content = content()
+        self.preview = preview()
     }
 
     public var body: some View {
         let configuration = CodeStyleConfiguration(
             code: code,
-            content: content)
+            preview: preview)
         AnyView(style.resolve(configuration: configuration))
     }
 }
@@ -34,7 +34,7 @@ public struct HorizontalCodeStyle: CodeStyle {
     public func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.code
-            configuration.content
+            configuration.preview
         }
     }
 }
@@ -50,7 +50,7 @@ public struct VerticalCodeStyle: CodeStyle {
     public func makeBody(configuration: Configuration) -> some View {
         VStack {
             configuration.code
-            configuration.content
+            configuration.preview
         }
     }
 }
@@ -97,17 +97,17 @@ public struct CodeStyleConfiguration {
         public var body: some View { base }
     }
 
-    public struct Content: View {
+    public struct Preview: View {
         fileprivate let base: AnyView
         public var body: some View { base }
     }
 
     public let code: Code
-    public let content: Content
+    public let preview: Preview
 
-    fileprivate init(code: some View, content: some View) {
+    fileprivate init(code: some View, preview: some View) {
         self.code = Code(base: AnyView(code))
-        self.content = Content(base: AnyView(content))
+        self.preview = Preview(base: AnyView(preview))
     }
 }
 
