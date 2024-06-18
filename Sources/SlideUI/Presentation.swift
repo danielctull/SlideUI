@@ -7,7 +7,7 @@ public struct Presentation<Slides: View>: Scene {
 
     @Environment(\.openWindow) private var openWindow
     @State private var deck = Deck()
-    @State private var size = PresentationSize()
+    @State private var size = PresentationSize.zero
     private let slides: Slides
 
     public init(@ViewBuilder slides: () -> Slides) {
