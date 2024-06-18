@@ -10,7 +10,10 @@ public struct Code<Preview: View>: View {
     private let code: LegacyCode
     private let preview: Preview
 
-    public init(@ViewBuilder preview: () -> Preview, code: () -> LegacyCode) {
+    public init(
+        code: () -> LegacyCode,
+        @ViewBuilder preview: () -> Preview
+    ) {
         self.code = code()
         self.preview = preview()
     }

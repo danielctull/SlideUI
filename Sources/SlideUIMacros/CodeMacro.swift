@@ -15,11 +15,11 @@ public struct CodeMacro: ExpressionMacro {
 
         return """
             Code {
-                \(closure.statements)
-            } code: {
                 #LegacyCode {
                     \(closure.statements)
                 }
+            } preview: {
+                \(closure.statements)
             }
             """
     }
