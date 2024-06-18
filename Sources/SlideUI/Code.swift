@@ -125,6 +125,13 @@ extension View {
     }
 }
 
+extension Scene {
+
+    public func codeHighlighting(_ style: some CodeHighlighting) -> some Scene {
+        environment(\.codeHighlighting, style)
+    }
+}
+
 public protocol CodeHighlighting: DynamicProperty {
     func color(for token: Token) -> Color
 }
