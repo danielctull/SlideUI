@@ -45,7 +45,7 @@ extension View {
         return preference(key: SlideIndexPreferenceKey.self, value: Deck(slide: info))
     }
 
-    func deck(_ action: @escaping (Deck) -> Void) -> some View {
+    func onDeckChange(_ action: @escaping (Deck) -> Void) -> some View {
         onPreferenceChange(SlideIndexPreferenceKey.self, perform: action)
     }
 }

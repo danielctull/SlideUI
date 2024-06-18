@@ -20,10 +20,10 @@ public struct Presentation<Slides: View>: Scene {
             ZStack {
                 slides
             }
-            .deck { deck = $0 }
             .environment(\.currentSlide, deck.current.id)
             .environment(\.presentationSize, size)
             .onAppear { openWindow(id: presenterDisplayID) }
+            .onDeckChange { deck = $0 }
             .onPresentationSizeChange { size = $0 }
         }
 
