@@ -1,9 +1,6 @@
 
 import SwiftUI
 
-@freestanding(expression)
-public macro LegacyCode(_ code: () -> Any) -> LegacyCode = #externalMacro(module: "SlideUIMacros", type: "LegacyCodeMacro")
-
 public struct LegacyCode: View {
 
     @Environment(\.legacyCodeStyle) private var style

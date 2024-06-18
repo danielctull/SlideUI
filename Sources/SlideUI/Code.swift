@@ -4,6 +4,9 @@ import SwiftUI
 @freestanding(expression)
 public macro Code<Preview: View>(@ViewBuilder _ preview: () -> Preview) -> Code<Preview> = #externalMacro(module: "SlideUIMacros", type: "CodePreviewMacro")
 
+@freestanding(expression)
+public macro Code(_ code: () -> Any) -> LegacyCode = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
+
 public struct Code<Preview: View>: View {
 
     @Environment(\.codeStyle) private var style

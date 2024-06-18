@@ -6,7 +6,7 @@ struct Failure: Error {
     let description: String
 }
 
-public struct LegacyCodeMacro: ExpressionMacro {
+public struct CodeMacro: ExpressionMacro {
 
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
@@ -41,7 +41,7 @@ public struct CodePreviewMacro: ExpressionMacro {
 
         return """
             Code {
-                #LegacyCode {
+                #Code {
                     \(closure.statements)
                 }
             } preview: {

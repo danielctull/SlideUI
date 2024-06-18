@@ -35,7 +35,7 @@ struct PresentationApp: App {
           }
 
           Slide(header: "Showing some code") {
-              #LegacyCode {
+              #Code {
                   struct Foo {
                       let bar: Bar
                   }
