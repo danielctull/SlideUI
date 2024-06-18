@@ -63,6 +63,18 @@ private struct TokensView: View {
     }
 }
 
+// MARK: - Preview Hidden Style
+
+extension CodeStyle where Self == PreviewHiddenCodeStyle {
+    public static var previewHidden: Self { Self() }
+}
+
+public struct PreviewHiddenCodeStyle: CodeStyle {
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.code
+    }
+}
+
 // MARK: - Horizontal Style
 
 extension CodeStyle where Self == HorizontalCodeStyle {
