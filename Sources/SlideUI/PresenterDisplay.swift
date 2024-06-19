@@ -8,7 +8,7 @@ struct PresenterDisplay: View {
 
     public var body: some View {
 
-        let configuration = PresenterDisplayConfiguration(
+        let configuration = PresenterDisplayStyleConfiguration(
             previousSlide: SlidePreview(slide: deck.previous),
             currentSlide: SlidePreview(slide: deck.current),
             nextSlide: SlidePreview(slide: deck.next),
@@ -71,7 +71,7 @@ public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
 
 public protocol PresenterDisplayStyle: DynamicProperty {
 
-    typealias Configuration = PresenterDisplayConfiguration
+    typealias Configuration = PresenterDisplayStyleConfiguration
     associatedtype Body: View
 
     @ViewBuilder func makeBody(configuration: Configuration) -> Body
@@ -93,7 +93,7 @@ extension Scene {
 
 // MARK: Configuration
 
-public struct PresenterDisplayConfiguration {
+public struct PresenterDisplayStyleConfiguration {
 
     public struct Preview {
 
