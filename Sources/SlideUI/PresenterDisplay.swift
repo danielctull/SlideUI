@@ -34,16 +34,11 @@ struct SlidePreview: View {
     }
 }
 
-// MARK: - Plain Style
+// MARK: - Style
 
-extension PresenterDisplayStyle where Self == DefaultPresenterDisplayStyle {
+private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
 
-    public static var `default`: Self { DefaultPresenterDisplayStyle() }
-}
-
-public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
+    func makeBody(configuration: Configuration) -> some View {
         VStack {
             HStack {
                 configuration.preview.previous
@@ -66,8 +61,6 @@ public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
         .padding()
     }
 }
-
-// MARK: - Style
 
 public protocol PresenterDisplayStyle: DynamicProperty {
 
@@ -166,7 +159,7 @@ public struct PresenterDisplayStyleConfiguration {
 // MARK: Environment
 
 private struct PresenterDisplayStyleKey: EnvironmentKey {
-    static var defaultValue: any PresenterDisplayStyle = .default
+    static var defaultValue: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
 }
 
 extension EnvironmentValues {
