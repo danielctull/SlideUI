@@ -63,51 +63,26 @@ private struct TokensView: View {
     }
 }
 
-// MARK: - Preview Hidden Style
+// MARK: - Style
 
-extension CodeStyle where Self == PreviewHiddenCodeStyle {
-    public static var previewHidden: Self { Self() }
-}
+private struct DefaultCodeStyle: CodeStyle {
 
-public struct PreviewHiddenCodeStyle: CodeStyle {
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.code
-    }
-}
+    @Environment(\.presentationSize) private var size
+    private var scale: Double { size.height / 250 }
 
-// MARK: - Horizontal Style
-
-extension CodeStyle where Self == HorizontalCodeStyle {
-    public static var horizontal: Self { Self() }
-}
-
-public struct HorizontalCodeStyle: CodeStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
+    func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.code
+                .font(.system(size: 16 * scale, weight: .regular, design: .monospaced))
+
+            Spacer()
+            
             configuration.preview
+            
+            Spacer()
         }
     }
 }
-
-// MARK: - Vertical Style
-
-extension CodeStyle where Self == VerticalCodeStyle {
-    public static var vertical: Self { Self() }
-}
-
-public struct VerticalCodeStyle: CodeStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
-        VStack {
-            configuration.code
-            configuration.preview
-        }
-    }
-}
-
-// MARK: - Style
 
 extension View {
 
@@ -131,7 +106,7 @@ public protocol CodeStyle: DynamicProperty {
 
     /// Creates a view that represents the body of a code view.
     ///
-    /// The system calls this method for each ``CodeView`` instance in a
+    /// The system calls this method for each ``Code`` instance in a
     /// view hierarchy where this style is the current code style.
     ///
     /// - Parameter configuration: The properties of the code view.
@@ -139,7 +114,7 @@ public protocol CodeStyle: DynamicProperty {
 }
 
 private struct CodeStyleKey: EnvironmentKey {
-    static var defaultValue: any CodeStyle = .horizontal
+    static var defaultValue: any CodeStyle = DefaultCodeStyle()
 }
 
 extension EnvironmentValues {

@@ -8,7 +8,7 @@ struct PresenterDisplay: View {
 
     public var body: some View {
 
-        let configuration = PresenterDisplayConfiguration(
+        let configuration = PresenterDisplayStyleConfiguration(
             previousSlide: SlidePreview(slide: deck.previous),
             currentSlide: SlidePreview(slide: deck.current),
             nextSlide: SlidePreview(slide: deck.next),
@@ -34,16 +34,11 @@ struct SlidePreview: View {
     }
 }
 
-// MARK: - Plain Style
+// MARK: - Style
 
-extension PresenterDisplayStyle where Self == DefaultPresenterDisplayStyle {
+private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
 
-    public static var `default`: Self { DefaultPresenterDisplayStyle() }
-}
-
-public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
+    func makeBody(configuration: Configuration) -> some View {
         VStack {
             HStack {
                 configuration.preview.previous
@@ -67,11 +62,9 @@ public struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
     }
 }
 
-// MARK: - Style
-
 public protocol PresenterDisplayStyle: DynamicProperty {
 
-    typealias Configuration = PresenterDisplayConfiguration
+    typealias Configuration = PresenterDisplayStyleConfiguration
     associatedtype Body: View
 
     @ViewBuilder func makeBody(configuration: Configuration) -> Body
@@ -93,7 +86,7 @@ extension Scene {
 
 // MARK: Configuration
 
-public struct PresenterDisplayConfiguration {
+public struct PresenterDisplayStyleConfiguration {
 
     public struct Preview {
 
@@ -166,7 +159,7 @@ public struct PresenterDisplayConfiguration {
 // MARK: Environment
 
 private struct PresenterDisplayStyleKey: EnvironmentKey {
-    static var defaultValue: any PresenterDisplayStyle = .default
+    static var defaultValue: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
 }
 
 extension EnvironmentValues {

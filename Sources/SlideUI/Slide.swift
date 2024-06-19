@@ -36,7 +36,7 @@ public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: Vie
 
     @ViewBuilder
     var resolvedContent: some View {
-        let configuration = SlideConfiguration(
+        let configuration = SlideStyleConfiguration(
             content: content,
             header: header,
             footer: footer)
@@ -200,39 +200,36 @@ extension Slide {
     }
 }
 
-// MARK: - Plain Style
+// MARK: - Style
 
-extension SlideStyle where Self == PlainSlideStyle {
+private struct DefaultSlideStyle: SlideStyle {
 
-    public static var plain: Self { PlainSlideStyle() }
-}
+    @Environment(\.presentationSize) private var size
+    private var scale: Double { size.height / 250 }
 
-public struct PlainSlideStyle: SlideStyle {
-
-    public func makeBody(configuration: Configuration) -> some View {
-        VStack {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(spacing: 8 * scale) {
 
             configuration.header
-                .font(.system(size: 60, weight: .bold))
-                .padding(20)
+                .font(.system(size: 32 * scale, weight: .bold))
 
             configuration.content
-                .font(.system(size: 30, weight: .regular))
+                .font(.system(size: 24 * scale, weight: .regular))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             configuration.footer
-                .font(.system(size: 20, weight: .regular))
-                .padding(20)
+                .font(.system(size: 16 * scale, weight: .regular))
+
         }
+        .padding(8 * scale)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.white)
     }
 }
 
-// MARK: - Style
-
 public protocol SlideStyle: DynamicProperty {
 
-    typealias Configuration = SlideConfiguration
+    typealias Configuration = SlideStyleConfiguration
     associatedtype Body: View
 
     @ViewBuilder func makeBody(configuration: Configuration) -> Body
@@ -254,7 +251,7 @@ extension Scene {
 
 // MARK: Configuration
 
-public struct SlideConfiguration {
+public struct SlideStyleConfiguration {
 
     public struct Content: View {
         fileprivate let base: AnyView
@@ -289,7 +286,7 @@ public struct SlideConfiguration {
 // MARK: Environment
 
 private struct SlideStyleKey: EnvironmentKey {
-    static var defaultValue: any SlideStyle = .plain
+    static var defaultValue: any SlideStyle = DefaultSlideStyle()
 }
 
 extension EnvironmentValues {
