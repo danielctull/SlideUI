@@ -7,43 +7,31 @@ struct PresentationApp: App {
       Presentation {
 
           Slide {
-              Code {
-                  """
-                  // This is a comment
-                  private final class Tokenizer2: SyntaxRewriter {
+              Text("Welcome to SlideUI")
+          }
+          .slideStyle(.title)
 
-                      var tokens: [Token] = []
-
-                      func visit(outside token: TokenSyntax) -> TokenSyntax {
-                          print(token, token.tokenKind, token.kind)
-                          tokens.append(contentsOf: token.tokens)
-                          return super.visit(token)
-                      }
-                  }
-                  """
-              }
+          Slide(header: "What is SlideUI?") {
+              Text("Write presentations using declarative SwiftUI syntax!")
+              Text("Customise styling with SlideStyle and CodeStyle.")
+              Text("Presenter display which shows notes.")
+          } notes: {
+              Text("Notes to remember my talking points:")
+              Text("• Separation of content and style.")
+              Text("• Ability to restyle all slides at once.")
           }
 
-          Slide(header: "Red Square") {
-
-              Text("This is how to make a red square.")
-
-              #Code {
-                  Color.red.frame(width: 100, height: 100)
-              }
+          Slide(header: "Embed SwiftUI views") {
+              Circle()
+                  .frame(width: 200, height: 200)
+                  .foregroundColor(.red)
+                  .frame(maxWidth: .infinity, alignment: .center)
           }
 
-          Slide(header: "No Preview!") {
+          Slide(header: "Compiler-checked Swift") {
 
-              Text("This is how to make a red square.")
+              Text("Using #Code macro allows writing code that is checked by the compiler")
 
-              #Code {
-                  Color.red.frame(width: 100, height: 100)
-              }
-              .codeStyle(.previewHidden)
-          }
-
-          Slide(header: "Showing some code") {
               #Code {
                   struct Foo {
                       let bar: Bar
@@ -53,8 +41,19 @@ struct PresentationApp: App {
                   print(foo.bar)
               }
           }
+
+          Slide(header: "SwiftUI Previews") {
+
+              Text("If the #Code block outputs a SwiftUI view, this will be rendered alongside the code.")
+
+              #Code {
+                  Circle()
+                      .frame(width: 200, height: 200)
+                      .foregroundColor(.red)
+              }
+          }
       }
-      .slideStyle(.custom)
+      .slideStyle(.content)
     }
 }
 
