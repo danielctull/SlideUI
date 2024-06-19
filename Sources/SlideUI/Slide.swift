@@ -36,7 +36,7 @@ public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: Vie
 
     @ViewBuilder
     var resolvedContent: some View {
-        let configuration = SlideConfiguration(
+        let configuration = SlideStyleConfiguration(
             content: content,
             header: header,
             footer: footer)
@@ -232,7 +232,7 @@ public struct PlainSlideStyle: SlideStyle {
 
 public protocol SlideStyle: DynamicProperty {
 
-    typealias Configuration = SlideConfiguration
+    typealias Configuration = SlideStyleConfiguration
     associatedtype Body: View
 
     @ViewBuilder func makeBody(configuration: Configuration) -> Body
@@ -254,7 +254,7 @@ extension Scene {
 
 // MARK: Configuration
 
-public struct SlideConfiguration {
+public struct SlideStyleConfiguration {
 
     public struct Content: View {
         fileprivate let base: AnyView
