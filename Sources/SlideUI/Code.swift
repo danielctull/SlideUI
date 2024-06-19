@@ -106,7 +106,7 @@ public protocol CodeStyle: DynamicProperty {
 
     /// Creates a view that represents the body of a code view.
     ///
-    /// The system calls this method for each ``CodeView`` instance in a
+    /// The system calls this method for each ``Code`` instance in a
     /// view hierarchy where this style is the current code style.
     ///
     /// - Parameter configuration: The properties of the code view.
