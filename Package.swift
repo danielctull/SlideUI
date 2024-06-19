@@ -35,6 +35,15 @@ let package = Package(
                 .product(name: "SwiftParser", package: "swift-syntax"),
             ]),
 
+
+        .executableTarget(
+            name: "SlideUI Demo",
+            dependencies: [
+                "SlideUI",
+                "XcodeCodeHighlighting",
+            ]
+        ),
+
         .testTarget(
             name: "SlideUITests",
             dependencies: [
