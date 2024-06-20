@@ -23,6 +23,11 @@ struct Deck: Equatable, Hashable {
         slides[index]
     }
 
+    mutating func showSlide(_ info: SlideInfo?) {
+        guard let info, let index = slides.firstIndex(of: info) else { return }
+        self.index = index
+    }
+
     // Next
 
     private var nextIndex: Int? {
@@ -34,10 +39,6 @@ struct Deck: Equatable, Hashable {
         nextIndex.map { slides[$0] }
     }
 
-    mutating func goNext() {
-        if let nextIndex { index = nextIndex }
-    }
-
     // Previous
     
     private var previousIndex: Int? {
@@ -47,10 +48,6 @@ struct Deck: Equatable, Hashable {
 
     var previous: SlideInfo? {
         previousIndex.map { slides[$0] }
-    }
-
-    mutating func goPrevious() {
-        if let previousIndex { index = previousIndex }
     }
 
     mutating func appendDeck(_ deck: Deck) {

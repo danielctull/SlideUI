@@ -9,12 +9,10 @@ struct PresenterDisplay: View {
     public var body: some View {
 
         let configuration = PresenterDisplayStyleConfiguration(
-            previousSlide: SlidePreview(slide: deck.previous),
-            currentSlide: SlidePreview(slide: deck.current),
-            nextSlide: SlidePreview(slide: deck.next),
-            previousButton: Button("Previous") { deck.goPrevious() },
-            nextButton: Button("Next") { deck.goNext() },
-            notes: deck.current.notes)
+            previous: deck.previous,
+            current: deck.current,
+            next: deck.next,
+            showSlide: { info in deck.showSlide(info) })
 
         AnyView(style.resolve(configuration: configuration))
     }
@@ -43,21 +41,21 @@ private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
     func makeBody(configuration: Configuration) -> some View {
         VStack {
             HStack {
-                configuration.preview.previous
+                configuration.slides.previous
                     .frame(width: 200, height: 150)
-                configuration.preview.current
+                configuration.slides.current
                     .frame(width: 400, height: 300)
-                configuration.preview.next
+                configuration.slides.next
                     .frame(width: 200, height: 150)
             }
 
-            configuration.notes
+            configuration.slides.current.notes
             
             Spacer()
 
             HStack {
-                configuration.control.previous
-                configuration.control.next
+                Button("Previous") { configuration.showSlide(configuration.slides.previous) }
+                Button("Next") { configuration.showSlide(configuration.slides.next) }
             }
         }
         .padding()
@@ -90,74 +88,44 @@ extension Scene {
 
 // MARK: Configuration
 
+@MainActor
 public struct PresenterDisplayStyleConfiguration {
 
-    public struct Preview {
-
-        public struct Previous: View {
-            fileprivate let base: AnyView
-            public var body: some View { base }
-        }
-
-        public struct Current: View {
-            fileprivate let base: AnyView
-            public var body: some View { base }
-        }
-
-        public struct Next: View {
-            fileprivate let base: AnyView
-            public var body: some View { base }
-        }
-
-        public let previous: Previous
-        public let current: Current
-        public let next: Next
+    public struct Slides {
+        public let previous: Slide
+        public let current: Slide
+        public let next: Slide
     }
 
-    public struct Control {
-        
-        public struct Previous: View {
-            fileprivate let base: AnyView
-            public var body: some View { base }
-        }
-
-        public struct Next: View {
-            fileprivate let base: AnyView
-            public var body: some View { base }
-        }
-
-        public let previous: Previous
-        public let next: Next
+    public struct Slide: View {
+        fileprivate let info: SlideInfo?
+        public var notes: Notes { Notes(content: info?.notes()) }
+        public var body: some View { SlidePreview(slide: info) }
     }
 
     public struct Notes: View {
-        fileprivate let base: AnyView
-        public var body: some View { base }
+        fileprivate let content: AnyView?
+        public var body: some View { content }
     }
 
-    public let preview: Preview
-    public let control: Control
+    public let slides: Slides
 
-    private let _notes: () -> Notes
-    public var notes: Notes { _notes() }
+    private let _showSlide: (SlideInfo?) -> ()
+    public func showSlide(_ slide: Slide) {
+        _showSlide(slide.info)
+    }
 
-    @MainActor
     fileprivate init(
-        previousSlide: some View,
-        currentSlide: some View,
-        nextSlide: some View,
-        previousButton: some View,
-        nextButton: some View,
-        notes: @escaping () -> AnyView
+        previous: SlideInfo?,
+        current: SlideInfo,
+        next: SlideInfo?,
+        showSlide: @escaping (SlideInfo?) -> ()
     ) {
-        self.preview = Preview(
-            previous: Preview.Previous(base: AnyView(previousSlide)),
-            current: Preview.Current(base: AnyView(currentSlide)),
-            next: Preview.Next(base: AnyView(nextSlide)))
-        self.control = Control(
-            previous: Control.Previous(base: AnyView(previousButton)),
-            next: Control.Next(base: AnyView(nextButton)))
-        _notes = { Notes(base: notes()) }
+        self.slides = Slides(
+            previous: Slide(info: previous),
+            current: Slide(info: current),
+            next: Slide(info: next))
+        self._showSlide = showSlide
     }
 }
 
