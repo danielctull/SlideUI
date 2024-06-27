@@ -12,9 +12,13 @@ struct PresentationApp: App {
           .slideStyle(.title)
 
           Slide(header: "What is SlideUI?") {
-              Text("Write presentations using declarative SwiftUI syntax!")
-              Text("Customise styling with SlideStyle and CodeStyle.")
-              Text("Presenter display which shows notes.")
+              Bullet("Write presentations using declarative SwiftUI syntax!")
+              Bullet("Fully customise styling") {
+                  Bullet("SlideStyle")
+                  Bullet("CodeStyle")
+                  Bullet("BulletStyle")
+              }
+              Bullet("Presenter display which shows notes.")
           } notes: {
               Text("Notes to remember my talking points:")
               Text("• Separation of content and style.")

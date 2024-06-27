@@ -46,7 +46,7 @@ struct ContentSlideStyle: SlideStyle {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(.purple)
 
-            VStack(spacing: scale * 16) {
+            VStack(spacing: scale * 8) {
                 configuration.content
                     .font(.system(size: 16 * scale, weight: .regular))
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,6 +62,7 @@ struct ContentSlideStyle: SlideStyle {
         .padding(8 * scale)
         .foregroundColor(.black)
         .background(.white)
+        .bulletStyle(.custom)
         .codeStyle(.custom)
         .codeHighlighting(.xcodeClassicLight)
     }
@@ -88,5 +89,42 @@ struct CustomCodeStyle: CodeStyle {
 
             Spacer()
         }
+    }
+}
+
+// MARK: - Bullet
+
+extension BulletStyle where Self == CustomBulletStyle {
+    static var custom: Self { Self() }
+}
+
+private struct CustomBulletStyle: BulletStyle {
+
+    @Environment(\.indentationLevel) private var indentationLevel
+    @Environment(\.presentationSize.scale) private var scale
+
+    private var imageName: String {
+        switch indentationLevel {
+        case 0, 2, 4: "diamond.fill"
+        case 1, 3, 5: "diamond"
+        default: "circle.fill"
+        }
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+
+        HStack(alignment: .firstTextCenter, spacing: 0) {
+
+            Image(systemName: imageName)
+                .resizable()
+                .frame(width: scale * 5, height: scale * 5)
+                .padding(.horizontal, scale * 5)
+                .foregroundColor(.purple)
+
+            configuration.content
+        }
+
+        configuration.children
+            .padding(.leading, scale * 15)
     }
 }
