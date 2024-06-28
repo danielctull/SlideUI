@@ -38,6 +38,8 @@ struct SlidePreview: View {
 
 private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
 
+    nonisolated init() {}
+
     func makeBody(configuration: Configuration) -> some View {
         VStack {
             HStack {

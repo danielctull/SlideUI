@@ -117,6 +117,8 @@ extension EnvironmentValues {
 }
 
 private struct DefaultBulletStyle: BulletStyle {
+    
+    nonisolated init() {}
 
     @Environment(\.indentationLevel) private var indentationLevel
     @Environment(\.presentationSize) private var size

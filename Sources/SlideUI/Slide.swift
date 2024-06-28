@@ -204,6 +204,8 @@ extension Slide {
 
 private struct DefaultSlideStyle: SlideStyle {
 
+    nonisolated init() {}
+
     @Environment(\.presentationSize) private var size
     private var scale: Double { size.height / 250 }
 

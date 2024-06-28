@@ -67,6 +67,8 @@ private struct TokensView: View {
 
 private struct DefaultCodeStyle: CodeStyle {
 
+    nonisolated init() {}
+
     @Environment(\.presentationSize) private var size
     private var scale: Double { size.height / 250 }
 
