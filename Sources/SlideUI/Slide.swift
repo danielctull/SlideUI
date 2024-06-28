@@ -274,6 +274,7 @@ public struct SlideStyleConfiguration {
     public let header: Header
     public let footer: Footer
 
+    @MainActor
     fileprivate init(
         content: some View,
         header: some View,

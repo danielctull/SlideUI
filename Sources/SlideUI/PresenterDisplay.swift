@@ -139,6 +139,7 @@ public struct PresenterDisplayStyleConfiguration {
     private let _notes: () -> Notes
     public var notes: Notes { _notes() }
 
+    @MainActor
     fileprivate init(
         previousSlide: some View,
         currentSlide: some View,

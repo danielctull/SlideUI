@@ -142,6 +142,7 @@ public struct CodeStyleConfiguration {
     public let code: Code
     public let preview: Preview
 
+    @MainActor
     fileprivate init(code: some View, preview: some View) {
         self.code = Code(base: AnyView(code))
         self.preview = Preview(base: AnyView(preview))

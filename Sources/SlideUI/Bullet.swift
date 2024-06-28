@@ -80,6 +80,7 @@ public struct BulletStyleConfiguration {
     public let content: Content
     public let children: Children
 
+    @MainActor
     fileprivate init(
         content: some View,
         children: some View
