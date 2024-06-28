@@ -1,6 +1,7 @@
 
 import SwiftUI
 
+@Style
 public struct Slide<Header: View, Content: View, Footer: View, Notes: View>: View {
 
     @Environment(\.slideStyle) private var style
@@ -225,14 +226,6 @@ private struct DefaultSlideStyle: SlideStyle {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.white)
     }
-}
-
-public protocol SlideStyle: DynamicProperty {
-
-    typealias Configuration = SlideStyleConfiguration
-    associatedtype Body: View
-
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
 }
 
 extension View {

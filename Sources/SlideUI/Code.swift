@@ -7,6 +7,7 @@ public macro Code<Preview: View>(@ViewBuilder preview: () -> Preview) -> Code<Pr
 @freestanding(expression)
 public macro Code(code: () -> Any) -> Code<EmptyView> = #externalMacro(module: "SlideUIMacros", type: "CodeMacro")
 
+@Style
 public struct Code<Preview: View>: View {
 
     @Environment(\.codeStyle) private var style
@@ -97,20 +98,6 @@ extension Scene {
     public func codeStyle(_ style: some CodeStyle) -> some Scene {
         environment(\.codeStyle, style)
     }
-}
-
-public protocol CodeStyle: DynamicProperty {
-
-    typealias Configuration = CodeStyleConfiguration
-    associatedtype Body : View
-
-    /// Creates a view that represents the body of a code view.
-    ///
-    /// The system calls this method for each ``Code`` instance in a
-    /// view hierarchy where this style is the current code style.
-    ///
-    /// - Parameter configuration: The properties of the code view.
-    @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
 private struct CodeStyleKey: EnvironmentKey {

@@ -1,6 +1,7 @@
 
 import SwiftUI
 
+@Style
 struct PresenterDisplay: View {
 
     @Environment(\.presenterDisplayStyle) private var style
@@ -60,14 +61,6 @@ private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
         }
         .padding()
     }
-}
-
-public protocol PresenterDisplayStyle: DynamicProperty {
-
-    typealias Configuration = PresenterDisplayStyleConfiguration
-    associatedtype Body: View
-
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
 }
 
 extension View {

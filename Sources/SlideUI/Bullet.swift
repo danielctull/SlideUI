@@ -1,5 +1,6 @@
 import SwiftUI
 
+@Style
 public struct Bullet<Content: View, Children: View>: View {
 
     @Environment(\.bulletStyle) private var style
@@ -13,7 +14,7 @@ public struct Bullet<Content: View, Children: View>: View {
     }
 
     public var body: some View {
-        let configuration = BulletConfiguration(
+        let configuration = BulletStyleConfiguration(
             content: content,
             children: children.indented())
         AnyView(style.resolve(configuration: configuration))
@@ -55,15 +56,7 @@ extension Bullet where Content == Text, Children == EmptyView {
 
 // MARK: - Style
 
-public protocol BulletStyle: DynamicProperty {
-
-    typealias Configuration = BulletConfiguration
-    associatedtype Body: View
-
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
-}
-
-public struct BulletConfiguration {
+public struct BulletStyleConfiguration {
 
     public struct Content: View {
         fileprivate let base: AnyView
