@@ -76,5 +76,9 @@ let package = Package(
             swiftSettings: [
               .enableExperimentalFeature("StrictConcurrency"),
             ]),
+    ],
+    swiftLanguageVersions: [
+        .v5,
+        .version("6"),
     ]
 )
