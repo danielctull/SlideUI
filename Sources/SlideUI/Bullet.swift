@@ -55,12 +55,14 @@ extension Bullet where Content == Text, Children == EmptyView {
 
 // MARK: - Style
 
+@MainActor
 public protocol BulletStyle: DynamicProperty {
 
     typealias Configuration = BulletStyleConfiguration
     associatedtype Body: View
 
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Configuration) -> Body
 }
 
 public struct BulletStyleConfiguration {

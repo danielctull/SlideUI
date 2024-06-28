@@ -62,12 +62,14 @@ private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
     }
 }
 
+@MainActor
 public protocol PresenterDisplayStyle: DynamicProperty {
 
     typealias Configuration = PresenterDisplayStyleConfiguration
     associatedtype Body: View
 
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Configuration) -> Body
 }
 
 extension View {

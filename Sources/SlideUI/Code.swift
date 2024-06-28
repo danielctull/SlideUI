@@ -99,6 +99,7 @@ extension Scene {
     }
 }
 
+@MainActor
 public protocol CodeStyle: DynamicProperty {
 
     typealias Configuration = CodeStyleConfiguration
@@ -110,7 +111,8 @@ public protocol CodeStyle: DynamicProperty {
     /// view hierarchy where this style is the current code style.
     ///
     /// - Parameter configuration: The properties of the code view.
-    @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
 private struct CodeStyleKey: EnvironmentKey {

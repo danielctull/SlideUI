@@ -227,12 +227,14 @@ private struct DefaultSlideStyle: SlideStyle {
     }
 }
 
+@MainActor
 public protocol SlideStyle: DynamicProperty {
 
     typealias Configuration = SlideStyleConfiguration
     associatedtype Body: View
 
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Configuration) -> Body
 }
 
 extension View {
