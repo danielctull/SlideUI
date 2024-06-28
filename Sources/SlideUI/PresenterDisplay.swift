@@ -159,7 +159,7 @@ public struct PresenterDisplayStyleConfiguration {
 // MARK: Environment
 
 private struct PresenterDisplayStyleKey: EnvironmentKey {
-    static var defaultValue: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
+    static let defaultValue: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
 }
 
 extension EnvironmentValues {

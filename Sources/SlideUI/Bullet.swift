@@ -102,7 +102,7 @@ extension Scene {
 }
 
 private enum BulletStyleKey: EnvironmentKey {
-    static var defaultValue: any BulletStyle = DefaultBulletStyle()
+    static let defaultValue: any BulletStyle = DefaultBulletStyle()
 }
 
 extension EnvironmentValues {

@@ -286,7 +286,7 @@ public struct SlideStyleConfiguration {
 // MARK: Environment
 
 private struct SlideStyleKey: EnvironmentKey {
-    static var defaultValue: any SlideStyle = DefaultSlideStyle()
+    static let defaultValue: any SlideStyle = DefaultSlideStyle()
 }
 
 extension EnvironmentValues {
