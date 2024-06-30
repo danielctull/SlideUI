@@ -21,8 +21,8 @@ let package = Package(
             targets: ["XcodeCodeHighlighting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0"),
-        .package(url: "https://github.com/apple/swift-format", from: "510.0.0"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "510.0.0"),
+        .package(url: "https://github.com/apple/swift-format.git", from: "510.0.0"),
     ],
     targets: [
 
