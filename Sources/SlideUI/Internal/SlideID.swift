@@ -17,7 +17,7 @@ extension SlideID: CustomStringConvertible {
 // MARK: - Environment
 
 private struct SlideIndexKey: EnvironmentKey {
-    static var defaultValue = SlideID()
+    static let defaultValue = SlideID()
 }
 
 extension EnvironmentValues {
@@ -30,7 +30,7 @@ extension EnvironmentValues {
 // MARK: - Registration
 
 private struct SlideIndexPreferenceKey: PreferenceKey {
-    static var defaultValue: Deck = Deck()
+    static let defaultValue: Deck = Deck()
     static func reduce(value: inout Deck, nextValue: () -> Deck) {
         value.appendDeck(nextValue())
     }

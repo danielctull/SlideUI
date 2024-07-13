@@ -55,12 +55,14 @@ extension Bullet where Content == Text, Children == EmptyView {
 
 // MARK: - Style
 
+@MainActor
 public protocol BulletStyle: DynamicProperty {
 
     typealias Configuration = BulletStyleConfiguration
     associatedtype Body: View
 
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Configuration) -> Body
 }
 
 public struct BulletStyleConfiguration {
@@ -78,6 +80,7 @@ public struct BulletStyleConfiguration {
     public let content: Content
     public let children: Children
 
+    @MainActor
     fileprivate init(
         content: some View,
         children: some View
@@ -102,7 +105,7 @@ extension Scene {
 }
 
 private enum BulletStyleKey: EnvironmentKey {
-    static var defaultValue: any BulletStyle = DefaultBulletStyle()
+    static let defaultValue: any BulletStyle = DefaultBulletStyle()
 }
 
 extension EnvironmentValues {
@@ -114,6 +117,8 @@ extension EnvironmentValues {
 }
 
 private struct DefaultBulletStyle: BulletStyle {
+    
+    nonisolated init() {}
 
     @Environment(\.indentationLevel) private var indentationLevel
     @Environment(\.presentationSize) private var size

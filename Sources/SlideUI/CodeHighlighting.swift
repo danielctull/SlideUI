@@ -17,7 +17,7 @@ extension Scene {
 }
 
 private struct CodeHighlightingKey: EnvironmentKey {
-    static var defaultValue: any CodeHighlighting = DefaultCodeHighlighting()
+    static let defaultValue: any CodeHighlighting = DefaultCodeHighlighting()
 }
 
 private struct DefaultCodeHighlighting: CodeHighlighting {

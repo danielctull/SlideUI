@@ -204,6 +204,8 @@ extension Slide {
 
 private struct DefaultSlideStyle: SlideStyle {
 
+    nonisolated init() {}
+
     @Environment(\.presentationSize) private var size
     private var scale: Double { size.height / 250 }
 
@@ -227,12 +229,14 @@ private struct DefaultSlideStyle: SlideStyle {
     }
 }
 
+@MainActor
 public protocol SlideStyle: DynamicProperty {
 
     typealias Configuration = SlideStyleConfiguration
     associatedtype Body: View
 
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Configuration) -> Body
 }
 
 extension View {
@@ -272,6 +276,7 @@ public struct SlideStyleConfiguration {
     public let header: Header
     public let footer: Footer
 
+    @MainActor
     fileprivate init(
         content: some View,
         header: some View,
@@ -286,7 +291,7 @@ public struct SlideStyleConfiguration {
 // MARK: Environment
 
 private struct SlideStyleKey: EnvironmentKey {
-    static var defaultValue: any SlideStyle = DefaultSlideStyle()
+    static let defaultValue: any SlideStyle = DefaultSlideStyle()
 }
 
 extension EnvironmentValues {

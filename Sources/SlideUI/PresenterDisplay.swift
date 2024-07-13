@@ -38,6 +38,8 @@ struct SlidePreview: View {
 
 private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
 
+    nonisolated init() {}
+
     func makeBody(configuration: Configuration) -> some View {
         VStack {
             HStack {
@@ -62,12 +64,14 @@ private struct DefaultPresenterDisplayStyle: PresenterDisplayStyle {
     }
 }
 
+@MainActor
 public protocol PresenterDisplayStyle: DynamicProperty {
 
     typealias Configuration = PresenterDisplayStyleConfiguration
     associatedtype Body: View
 
-    @ViewBuilder func makeBody(configuration: Configuration) -> Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Configuration) -> Body
 }
 
 extension View {
@@ -137,6 +141,7 @@ public struct PresenterDisplayStyleConfiguration {
     private let _notes: () -> Notes
     public var notes: Notes { _notes() }
 
+    @MainActor
     fileprivate init(
         previousSlide: some View,
         currentSlide: some View,
@@ -159,7 +164,7 @@ public struct PresenterDisplayStyleConfiguration {
 // MARK: Environment
 
 private struct PresenterDisplayStyleKey: EnvironmentKey {
-    static var defaultValue: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
+    static let defaultValue: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
 }
 
 extension EnvironmentValues {

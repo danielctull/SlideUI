@@ -67,6 +67,8 @@ private struct TokensView: View {
 
 private struct DefaultCodeStyle: CodeStyle {
 
+    nonisolated init() {}
+
     @Environment(\.presentationSize) private var size
     private var scale: Double { size.height / 250 }
 
@@ -99,6 +101,7 @@ extension Scene {
     }
 }
 
+@MainActor
 public protocol CodeStyle: DynamicProperty {
 
     typealias Configuration = CodeStyleConfiguration
@@ -110,11 +113,12 @@ public protocol CodeStyle: DynamicProperty {
     /// view hierarchy where this style is the current code style.
     ///
     /// - Parameter configuration: The properties of the code view.
-    @ViewBuilder func makeBody(configuration: Self.Configuration) -> Self.Body
+    @ViewBuilder @MainActor
+    func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
 private struct CodeStyleKey: EnvironmentKey {
-    static var defaultValue: any CodeStyle = DefaultCodeStyle()
+    static let defaultValue: any CodeStyle = DefaultCodeStyle()
 }
 
 extension EnvironmentValues {
@@ -140,6 +144,7 @@ public struct CodeStyleConfiguration {
     public let code: Code
     public let preview: Preview
 
+    @MainActor
     fileprivate init(code: some View, preview: some View) {
         self.code = Code(base: AnyView(code))
         self.preview = Preview(base: AnyView(preview))
