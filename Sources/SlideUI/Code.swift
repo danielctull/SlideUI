@@ -118,7 +118,7 @@ public protocol CodeStyle: DynamicProperty {
 }
 
 private struct CodeStyleKey: EnvironmentKey {
-    static let defaultValue: any CodeStyle = DefaultCodeStyle()
+    static var defaultValue: any CodeStyle { DefaultCodeStyle() }
 }
 
 extension EnvironmentValues {

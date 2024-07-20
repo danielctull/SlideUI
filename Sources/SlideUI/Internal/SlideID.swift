@@ -30,7 +30,7 @@ extension EnvironmentValues {
 // MARK: - Registration
 
 private struct SlideIndexPreferenceKey: PreferenceKey {
-    static let defaultValue: Deck = Deck()
+    static var defaultValue: Deck { Deck() }
     static func reduce(value: inout Deck, nextValue: () -> Deck) {
         value.appendDeck(nextValue())
     }
