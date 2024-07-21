@@ -14,7 +14,7 @@ struct SlideInfo {
 }
 
 extension SlideInfo {
-    static let none = SlideInfo(id: .none, content: EmptyView.init, notes: EmptyView.init)
+    static var none: SlideInfo { SlideInfo(id: .none, content: EmptyView.init, notes: EmptyView.init) }
 }
 
 extension SlideInfo: Equatable {
