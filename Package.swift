@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version: 6.0
 
 import CompilerPluginSupport
 import PackageDescription
@@ -77,7 +77,7 @@ let package = Package(
               .enableExperimentalFeature("StrictConcurrency"),
             ]),
     ],
-    swiftLanguageVersions: [
+    swiftLanguageModes: [
         .v5,
         .version("6"),
     ]
