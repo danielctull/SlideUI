@@ -117,16 +117,8 @@ public protocol CodeStyle: DynamicProperty {
     func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
-private struct CodeStyleKey: EnvironmentKey {
-    static var defaultValue: any CodeStyle { DefaultCodeStyle() }
-}
-
 extension EnvironmentValues {
-
-    fileprivate var codeStyle: any CodeStyle {
-        get { self[CodeStyleKey.self] }
-        set { self[CodeStyleKey.self] = newValue }
-    }
+    @Entry fileprivate var codeStyle: any CodeStyle = DefaultCodeStyle()
 }
 
 public struct CodeStyleConfiguration {

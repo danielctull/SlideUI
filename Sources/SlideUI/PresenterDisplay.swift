@@ -136,11 +136,7 @@ private struct PresenterDisplayStyleKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-
-    fileprivate var presenterDisplayStyle: any PresenterDisplayStyle {
-        get { self[PresenterDisplayStyleKey.self] }
-        set { self[PresenterDisplayStyleKey.self] = newValue }
-    }
+    @Entry fileprivate var presenterDisplayStyle: any PresenterDisplayStyle = DefaultPresenterDisplayStyle()
 }
 
 // MARK: Resolution

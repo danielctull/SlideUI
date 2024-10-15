@@ -16,15 +16,8 @@ extension SlideID: CustomStringConvertible {
 
 // MARK: - Environment
 
-private struct SlideIndexKey: EnvironmentKey {
-    static let defaultValue = SlideID()
-}
-
 extension EnvironmentValues {
-    var currentSlide: SlideID {
-        get { self[SlideIndexKey.self] }
-        set { self[SlideIndexKey.self] = newValue }
-    }
+    @Entry var currentSlide = SlideID()
 }
 
 // MARK: - Registration

@@ -104,16 +104,8 @@ extension Scene {
     }
 }
 
-private enum BulletStyleKey: EnvironmentKey {
-    static var defaultValue: any BulletStyle { DefaultBulletStyle() }
-}
-
 extension EnvironmentValues {
-
-    fileprivate var bulletStyle: any BulletStyle {
-        get { self[BulletStyleKey.self] }
-        set { self[BulletStyleKey.self] = newValue }
-    }
+    @Entry fileprivate var bulletStyle: any BulletStyle = DefaultBulletStyle()
 }
 
 private struct DefaultBulletStyle: BulletStyle {
@@ -205,17 +197,8 @@ private struct IndentedViewModifier: ViewModifier {
     }
 }
 
-extension IndentationLevel {
-    fileprivate struct EnvironmentKey: SwiftUI.EnvironmentKey {
-        static let defaultValue: IndentationLevel = 0
-    }
-}
-
 extension EnvironmentValues {
-    public fileprivate(set) var indentationLevel: IndentationLevel {
-        get { self[IndentationLevel.EnvironmentKey.self] }
-        set { self[IndentationLevel.EnvironmentKey.self] = newValue }
-    }
+    @Entry public fileprivate(set) var indentationLevel: IndentationLevel = 0
 }
 
 // MARK: - Alignment

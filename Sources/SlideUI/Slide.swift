@@ -290,16 +290,8 @@ public struct SlideStyleConfiguration {
 
 // MARK: Environment
 
-private struct SlideStyleKey: EnvironmentKey {
-    static var defaultValue: any SlideStyle { DefaultSlideStyle() }
-}
-
 extension EnvironmentValues {
-
-    fileprivate var slideStyle: any SlideStyle {
-        get { self[SlideStyleKey.self] }
-        set { self[SlideStyleKey.self] = newValue }
-    }
+    @Entry fileprivate var slideStyle: any SlideStyle = DefaultSlideStyle()
 }
 
 // MARK: Resolution
