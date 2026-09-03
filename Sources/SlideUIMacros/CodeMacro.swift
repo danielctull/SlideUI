@@ -1,4 +1,3 @@
-import SwiftFormat
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -17,13 +16,8 @@ public struct CodeMacro: ExpressionMacro {
             throw Failure(description: "Does not have a trailing closure.")
         }
 
-        var output = ""
-        let formatter = SwiftFormatter(configuration: .init())
-        let file = SourceFileSyntax(statements: closure.statements)
-        try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
-
         return """
-            Code { \(literal: output) }
+            Code { \(literal: closure.formattedContents) }
             """
     }
 }
@@ -39,17 +33,20 @@ public struct CodePreviewMacro: ExpressionMacro {
             throw Failure(description: "Does not have a trailing closure.")
         }
 
-        var output = ""
-        let formatter = SwiftFormatter(configuration: .init())
-        let file = SourceFileSyntax(statements: closure.statements)
-        try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &output)
 
         return """
             Code {
-                \(literal: output)
+                \(literal: closure.formattedContents)
             } preview: {
                 \(closure.statements)
             }
             """
     }
+}
+
+extension ClosureExprSyntax {
+
+  var formattedContents: String {
+    String(description.dropFirst().dropLast())
+  }
 }

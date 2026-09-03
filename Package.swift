@@ -51,6 +51,8 @@ let package = Package(
             name: "SlideUITests",
             dependencies: [
                 "SlideUI",
+                "SlideUIMacros",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ],
             swiftSettings: [
               .enableExperimentalFeature("StrictConcurrency"),
@@ -59,7 +61,6 @@ let package = Package(
         .macro(
             name: "SlideUIMacros",
             dependencies: [
-                .product(name: "SwiftFormat", package: "swift-format"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
