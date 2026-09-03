@@ -16,7 +16,7 @@ struct CodeTests {
       """,
       expandedSource: ##"""
       Code {
-          #"\#n  let value = "test" // these comments should remain\#n"#
+          #"let value = "test" // these comments should remain\#n"#
       }
       """##,
       macros: ["Code": CodeMacro.self])

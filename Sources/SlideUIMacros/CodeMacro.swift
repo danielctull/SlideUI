@@ -1,3 +1,5 @@
+import Foundation
+import SwiftFormat
 import SwiftSyntax
 import SwiftSyntaxMacros
 
@@ -17,7 +19,7 @@ public struct CodeMacro: ExpressionMacro {
         }
 
         return """
-            Code { \(literal: closure.formattedContents) }
+            Code { \(literal: try closure.formattedContents()) }
             """
     }
 }
@@ -33,10 +35,9 @@ public struct CodePreviewMacro: ExpressionMacro {
             throw Failure(description: "Does not have a trailing closure.")
         }
 
-
         return """
             Code {
-                \(literal: closure.formattedContents)
+                \(literal: try closure.formattedContents())
             } preview: {
                 \(closure.statements)
             }
@@ -46,7 +47,32 @@ public struct CodePreviewMacro: ExpressionMacro {
 
 extension ClosureExprSyntax {
 
-  var formattedContents: String {
-    String(description.dropFirst().dropLast())
+  func formattedContents() throws -> String {
+    var formatted = ""
+    let formatter = SwiftFormatter(configuration: .init())
+    let file = SourceFileSyntax(statements: statements)
+    try formatter.format(syntax: file, operatorTable: .init(), assumingFileURL: nil, to: &formatted)
+
+    let source = String(description.dropFirst().dropLast())
+    let sourceLines = source.split(separator: "\n", omittingEmptySubsequences: false)
+    var formattedLines = formatted.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+    var searchStart = formattedLines.startIndex
+
+    for sourceLine in sourceLines {
+      guard let commentRange = sourceLine.range(of: "//") else { continue }
+
+      let code = sourceLine[..<commentRange.lowerBound]
+      guard !code.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
+
+      let normalizedCode = code.filter { !$0.isWhitespace }
+      guard let lineIndex = formattedLines[searchStart...].firstIndex(where: {
+        $0.filter { !$0.isWhitespace }.hasPrefix(normalizedCode)
+      }) else { continue }
+
+      formattedLines[lineIndex] += " " + sourceLine[commentRange.lowerBound...]
+      searchStart = formattedLines.index(after: lineIndex)
+    }
+
+    return formattedLines.joined(separator: "\n")
   }
 }
